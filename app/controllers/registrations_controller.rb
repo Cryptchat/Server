@@ -1,7 +1,7 @@
 class RegistrationsController < ApplicationController
   def knock
     render json: {
-      is_sechat: true,
+      is_cryptchat: true,
       name: "Smokin' hot!"
     }
   end

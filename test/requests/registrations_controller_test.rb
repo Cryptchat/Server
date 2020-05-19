@@ -5,7 +5,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     get "/knock-knock.json"
     assert_equal(200, response.status)
     json = JSON.parse(response.body)
-    assert_equal(true, json["is_sechat"])
+    assert_equal(true, json["is_cryptchat"])
   end
 
   test "#register requires country_code and phone_number when id is absent" do
