@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 class RegistrationsControllerTest < ActionDispatch::IntegrationTest
@@ -66,7 +67,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     post "/register.json", params: {
       id: record.id,
-      verification_token: "12345679",
+      verification_token: "12345678",
       identity_key: "3333aaaa"
     }
     assert_equal(200, response.status)
@@ -80,7 +81,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     post "/register.json", params: {
       id: record.id,
-      verification_token: "12345679",
+      verification_token: "12345678",
       identity_key: "4444bbbb"
     }
     assert_equal(403, response.status)
@@ -118,7 +119,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     post "/register.json", params: {
       id: record.id,
-      verification_token: "12345679",
+      verification_token: "12345678",
       identity_key: "3333aaaa"
     }
     assert_equal(403, response.status)

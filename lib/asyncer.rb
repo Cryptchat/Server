@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Asyncer
   @@mutex = Mutex.new
   @@queue = Queue.new

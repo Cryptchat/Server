@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_relative 'boot'
 
 require "rails"
@@ -35,6 +36,7 @@ module Cryptchat
     config.api_only = true
 
     config.autoload_paths += Dir["#{config.root}/lib"]
-    config.pbkdf2_iterations = 1000
+
+    config.token_pbkdf2_iterations = 30000
   end
 end

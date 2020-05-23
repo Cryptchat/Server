@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Registration < ApplicationRecord
   include HasPhoneNumber
 
@@ -25,9 +26,7 @@ class Registration < ApplicationRecord
       return result
     end
 
-    hash = Pbkdf2.hash_secret(verification_token, self.salt, Rails.configuration.pbkdf2_iterations)
-    matched = ActiveSupport::SecurityUtils.fixed_length_secure_compare(hash, self.verification_token_hash)
-    if !matched
+    if !correct_token?(verification_token)
       result[:success] = false
       result[:reason] = I18n.t("incorrect_code")
     end
@@ -46,10 +45,18 @@ class Registration < ApplicationRecord
   private
 
   def verification_data
-    verification_token = (SecureRandom.rand * 10**8).ceil.to_s
-    salt = SecureRandom.hex(16)
-    hash = Pbkdf2.hash_secret(verification_token, salt, Rails.configuration.pbkdf2_iterations)
+    verification_token = CryptUtilities.generate_digits_token(8)
+    salt, hash = CryptUtilities.salt_and_hash(verification_token, Rails.configuration.token_pbkdf2_iterations)
     [verification_token, salt, hash]
+  end
+
+  def correct_token?(token)
+    hashed_token = CryptUtilities.pbkdf2_hash(
+      token,
+      self.salt,
+      Rails.configuration.token_pbkdf2_iterations
+    )
+    ActiveSupport::SecurityUtils.fixed_length_secure_compare(hashed_token, self.verification_token_hash)
   end
 end
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Message < ApplicationRecord
   validates :body, :sender_user_id, :receiver_user_id, presence: true
   belongs_to :sender, foreign_key: :sender_user_id, class_name: 'User'

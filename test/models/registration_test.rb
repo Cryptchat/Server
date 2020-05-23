@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 class RegistrationTest < ActiveSupport::TestCase
@@ -56,6 +57,16 @@ class RegistrationTest < ActiveSupport::TestCase
     record.generate_token!
     assert_not_equal(old.to_i, record.created_at.to_i)
     assert_not_equal(old.to_i, record.updated_at.to_i)
+  end
+
+  test "verification_token is not stored in the database and is 8 digits long" do
+    user = Fabricate(:user)
+    record = Registration.new(phone_number: "11", country_code: "11", user_id: user.id)
+    record.generate_token!
+    record.save!
+    assert_not_equal(record.verification_token_hash, record.verification_token)
+    assert_equal(8, record.verification_token.size)
+    assert_equal(64, record.verification_token_hash.size)
   end
 end
 

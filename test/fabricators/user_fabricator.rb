@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Fabricator(:user) do
   country_code "00966"
   phone_number { sequence(:phone_number).to_s }

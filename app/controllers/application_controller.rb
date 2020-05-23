@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ApplicationController < ActionController::API
   rescue_from ActionController::ParameterMissing do |err|
     render json: { messages: [err.message] }, status: 400
