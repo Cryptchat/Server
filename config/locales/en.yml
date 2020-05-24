@@ -33,3 +33,5 @@ en:
   too_much_time_passed: "Too much time has passed since the code was sent. Please register again."
   number_already_registered: "This number is already registered on the server. Please use a different number"
   incorrect_code: "Incorrect code. Please try again."
+  keys_param_must_string_array: "Keys param must be a string array"
+  keys_count_exceeds_limit: "Cannot add this batch of keys because keys count would exceed the limit."

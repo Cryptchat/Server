@@ -38,5 +38,7 @@ module Cryptchat
     config.autoload_paths += Dir["#{config.root}/lib"]
 
     config.token_pbkdf2_iterations = 30000
+
+    config.user_ephemeral_keys_max_count = 1000
   end
 end

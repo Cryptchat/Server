@@ -41,4 +41,6 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   config.token_pbkdf2_iterations = 10
+
+  config.user_ephemeral_keys_max_count = 10
 end

@@ -67,6 +67,7 @@ class RegistrationTest < ActiveSupport::TestCase
     assert_not_equal(record.verification_token_hash, record.verification_token)
     assert_equal(8, record.verification_token.size)
     assert_equal(64, record.verification_token_hash.size)
+    assert_not_includes(record.attributes.values, record.verification_token)
   end
 end
 

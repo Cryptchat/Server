@@ -10,7 +10,7 @@ class User < ApplicationRecord
 
   validates :name, length: { maximum: 255 }
 
-  def atomic_delete_and_return_ephemeral_key
+  def atomic_delete_and_return_ephemeral_key!
     arg = Rails.env.test? ? {} : { isolation: :serializable }
     query = <<~SQL
       DELETE FROM ephemeral_keys
@@ -27,7 +27,7 @@ class User < ApplicationRecord
     end
   end
 
-  def add_ephemeral_keys(keys)
+  def add_ephemeral_keys!(keys)
     mapped = keys.map do |key|
       timestamp = Time.zone.now
       {
