@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Rails.application.routes.draw do
   scope path: nil, constraints: { format: :json } do
     post "message.json" => "messages#transmit"
@@ -7,5 +8,7 @@ Rails.application.routes.draw do
     post "register.json" => "registrations#register"
 
     post "ephemeral-keys.json" => "ephemeral_keys#top_up"
+
+    get "sync/users.json" => "users#sync"
   end
 end

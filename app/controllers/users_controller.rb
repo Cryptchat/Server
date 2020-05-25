@@ -1,6 +1,13 @@
 # frozen_string_literal: true
+
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
+
+  def sync
+    updated_at = params[:updated_at]&.to_f&.floor || 0
+    users = User.where("EXTRACT(EPOCH FROM updated_at) >= ?", updated_at)
+    render json: users
+  end
 
   # POST /users
   def create
