@@ -11,10 +11,6 @@ class UserSerializer < ActiveModel::Serializer
     :created_at
   )
 
-  def id
-    2147483
-  end
-
   def updated_at
     object.updated_at.to_f
   end
