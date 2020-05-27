@@ -3,6 +3,7 @@ class CreateEphemeralKeys < ActiveRecord::Migration[6.0]
   def change
     create_table :ephemeral_keys do |t|
       t.string :key, null: false
+      t.bigint :id_on_user_device, null: false
       t.bigint :user_id, null: false
       t.timestamps null: false
     end

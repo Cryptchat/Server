@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 class EphemeralKeysController < ApplicationController
   def top_up
-    keys = params.require(:keys)
-    unless Array === keys
-      return render json: { messages: [I18n.t("keys_param_must_string_array")] }, status: 422
+    keys = params.permit([{ keys: [:id, :key] }])[:keys]
+    if !(Array === keys) || keys.size == 0
+      return render json: { messages: [I18n.t("keys_param_incorrect_format")] }, status: 422
+    end
+    keys.each do |k|
+      k.require(%i[id key])
     end
 
     # user = current_user

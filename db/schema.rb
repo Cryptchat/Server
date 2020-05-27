@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 2020_05_23_170753) do
 
   create_table "ephemeral_keys", force: :cascade do |t|
     t.string "key", null: false
+    t.bigint "id_on_user_device", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

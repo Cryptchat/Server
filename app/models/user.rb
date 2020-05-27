@@ -14,7 +14,7 @@ class User < ApplicationRecord
     arg = Rails.env.test? ? {} : { isolation: :serializable }
     query = <<~SQL
       DELETE FROM ephemeral_keys
-      WHERE id IN (
+      WHERE id = (
         SELECT id
         FROM ephemeral_keys
         WHERE user_id = ?
@@ -31,7 +31,8 @@ class User < ApplicationRecord
     mapped = keys.map do |key|
       timestamp = Time.zone.now
       {
-        key: key,
+        key: key[:key],
+        id_on_user_device: key[:id],
         user_id: self.id,
         created_at: timestamp,
         updated_at: timestamp

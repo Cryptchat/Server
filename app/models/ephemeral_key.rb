@@ -7,11 +7,12 @@ end
 #
 # Table name: ephemeral_keys
 #
-#  id         :bigint           not null, primary key
-#  key        :string           not null
-#  user_id    :bigint           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id                :bigint           not null, primary key
+#  key               :string           not null
+#  id_on_user_device :bigint           not null
+#  user_id           :bigint           not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
 #
 # Indexes
 #
