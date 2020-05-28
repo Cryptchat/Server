@@ -48,6 +48,27 @@ class EphemeralKeysControllerTest < ActionDispatch::IntegrationTest
     assert_equal( keys + keys2, formatted_ephemeral_keys(user))
   end
 
+  test '#grab returns key when there is one' do
+    user = Fabricate(:user)
+    keys = (1..1).map { |n| { id: n + 10, key: "key#{n + 10}" } }
+    user.add_ephemeral_keys!(keys)
+
+    post '/ephemeral-keys/grab.json', params: { user_id: user.id }
+    assert_equal(200, response.status)
+    assert_equal("key11", response.parsed_body["ephemeral_key"]["key"])
+    assert_equal(11, response.parsed_body["ephemeral_key"]["id_on_user_device"])
+
+    post '/ephemeral-keys/grab.json', params: { user_id: user.id }
+    assert_equal(200, response.status)
+    assert_nil(response.parsed_body["ephemeral_key"])
+  end
+
+  test '#grab requires user_id param' do
+    post '/ephemeral-keys/grab.json'
+    assert_equal(400, response.status)
+    assert_equal("param is missing or the value is empty: user_id", response.parsed_body["messages"].first)
+  end
+
   private
 
   def formatted_ephemeral_keys(user)

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     post "register.json" => "registrations#register"
 
     post "ephemeral-keys.json" => "ephemeral_keys#top_up"
+    post "ephemeral-keys/grab.json" => "ephemeral_keys#grab"
 
     get "sync/users.json" => "users#sync"
   end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class EphemeralKey < ApplicationRecord
   belongs_to :user
 end

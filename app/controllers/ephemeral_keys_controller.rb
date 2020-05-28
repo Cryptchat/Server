@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class EphemeralKeysController < ApplicationController
   def top_up
     keys = params.permit([{ keys: [:id, :key] }])[:keys]
@@ -18,5 +19,13 @@ class EphemeralKeysController < ApplicationController
 
     user.add_ephemeral_keys!(keys)
     render json: {}, status: 200
+  end
+
+  def grab
+    user = User.find_by(id: params.require(:user_id))
+    return render json: {}, status: 404 unless user
+
+    key = user.atomic_delete_and_return_ephemeral_key!
+    render json: (key || {})
   end
 end
