@@ -26,8 +26,12 @@ ActiveRecord::Schema.define(version: 2020_05_23_170753) do
 
   create_table "messages", force: :cascade do |t|
     t.text "body", null: false
+    t.text "mac", null: false
+    t.text "iv", null: false
     t.bigint "sender_user_id", null: false
     t.bigint "receiver_user_id", null: false
+    t.text "sender_ephemeral_public_key"
+    t.bigint "ephemeral_key_id_on_user_device"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

@@ -11,10 +11,11 @@ end
 #
 # Table name: messages
 #
-#  id               :bigint           not null, primary key
-#  body             :text             not null
-#  sender_user_id   :bigint           not null
-#  receiver_user_id :bigint           not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
+#  id                              :bigint           not null, primary key
+#  body                            :text             not null
+#  sender_user_id                  :bigint           not null
+#  receiver_user_id                :bigint           not null
+#  created_at                      :datetime         not null
+#  updated_at                      :datetime         not null
+#  ephemeral_key_id_on_user_device :bigint
 #
