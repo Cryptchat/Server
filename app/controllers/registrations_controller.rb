@@ -15,13 +15,11 @@ class RegistrationsController < ApplicationController
 
       result = record.verify(verification_token)
       if result[:success]
-        secret_token = SecureRandom.hex
         user = User.new(
           country_code: record.country_code,
           phone_number: record.phone_number,
           identity_key: identity_key,
-          instance_id: params[:instance_id]&.to_s,
-          secret_token: secret_token
+          instance_id: params[:instance_id]&.to_s
         )
 
         ActiveRecord::Base.transaction do
@@ -29,7 +27,7 @@ class RegistrationsController < ApplicationController
           record.user_id = user.id
           record.save!
         end
-        render json: { id: user.id, secret_token: secret_token }
+        render json: { id: user.id }
       else
         render json: { messages: [result[:reason]] }, status: 403
       end

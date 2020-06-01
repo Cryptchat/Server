@@ -23,8 +23,8 @@ class Notifier
         "Content-Type" => "application/json",
         "Authorization" => "key=#{@server_key}"
       }
-      @users.each do |user|
-        res = ::Net::HTTP.post(uri, payload(user).to_json, headers)
+      @users.each_slice(1000).each do |users|
+        res = ::Net::HTTP.post(uri, payload(users).to_json, headers)
         puts res
       end
     end
@@ -32,10 +32,12 @@ class Notifier
 
   private
 
-  def payload(user)
+  def payload(users)
+    instance_ids = users.map(&:instance_id)
+    instance_id.compact!
     {
-      registration_ids: [user.instance_id],
-      data: @data.merge(secret_token: user.secret_token)
+      registration_ids: instance_ids,
+      data: @data
     }
   end
 end

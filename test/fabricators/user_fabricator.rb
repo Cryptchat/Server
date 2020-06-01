@@ -4,7 +4,6 @@ Fabricator(:user) do
   phone_number { sequence(:phone_number).to_s }
   instance_id { sequence(:instance_id).to_s }
   identity_key { sequence(:identity_key).to_s }
-  secret_token { sequence(:secret_token).to_s }
 end
 
 # == Schema Information

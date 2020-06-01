@@ -81,7 +81,6 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal(record.user.phone_number, record.phone_number)
     assert_equal(record.user.country_code, record.country_code)
     assert_equal("dfwersadsad", record.user.instance_id)
-    assert_equal(32, record.user.secret_token.size)
     old_attrs = record.attributes
 
     travel(5.minutes)
