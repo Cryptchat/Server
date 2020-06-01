@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(version: 2020_05_23_170753) do
     t.string "phone_number", limit: 50, null: false
     t.string "instance_id"
     t.string "identity_key", null: false
+    t.string "secret_token", limit: 32, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["country_code", "phone_number"], name: "index_users_on_country_code_and_phone_number", unique: true

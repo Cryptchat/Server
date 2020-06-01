@@ -20,13 +20,17 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#register without id param creates a registration record" do
+    ENV["CRYPTCHAT_SENDER_ID"] = "35234324234"
     post "/register.json", params: { country_code: "111", phone_number: "1111" }
     assert_equal(200, response.status)
     id = response.parsed_body["id"]
     record = Registration.find(id)
     assert_equal("1111", record.phone_number)
     assert_equal("111", record.country_code)
+    assert_equal("35234324234", response.parsed_body["sender_id"])
     assert_nil(record.user_id)
+  ensure
+    ENV.delete("CRYPTCHAT_SENDER_ID")
   end
 
   test "#register without id param doesn't create registration if number already exists on the system" do
@@ -52,7 +56,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_not_equal(record.verification_token_hash, new_record.verification_token_hash)
     assert_not_equal(record.salt, new_record.salt)
     assert_equal(record.id, new_record.id)
-    assert_in_delta(new_record.created_at - record.created_at, 300, 1)
+    assert_in_delta(new_record.created_at - record.created_at, 5 * 60, 1)
     assert_nil(record.user_id)
     assert_nil(new_record.user_id)
   end
@@ -68,13 +72,16 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     post "/register.json", params: {
       id: record.id,
       verification_token: "12345678",
-      identity_key: "3333aaaa"
+      identity_key: "3333aaaa",
+      instance_id: "dfwersadsad"
     }
     assert_equal(200, response.status)
     record.reload
     assert(record.user)
     assert_equal(record.user.phone_number, record.phone_number)
     assert_equal(record.user.country_code, record.country_code)
+    assert_equal("dfwersadsad", record.user.instance_id)
+    assert_equal(32, record.user.secret_token.size)
     old_attrs = record.attributes
 
     travel(5.minutes)
