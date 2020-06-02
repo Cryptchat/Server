@@ -5,6 +5,10 @@ class Asyncer
   @@thread = nil
 
   def self.exec(&blk)
+    if Rails.env.test?
+      blk.call
+      return
+    end
     start if !@@thread&.alive?
     @@queue << blk
   end

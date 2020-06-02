@@ -13,6 +13,13 @@ class MessagesController < ApplicationController
     # message_params.merge!(sender_user_id: current_user.id)
     @message = Message.new(message_params)
     if @message.save
+      notifier = Notifier.new(
+        user: @message.receiver,
+        data: {
+          command: "sync_messages"
+        }
+      )
+      notifier.notify
       render json: { message: { id: @message.id } }, status: 200
     else
       render unprocessable_entity_response(@message.errors.full_messages)

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'net/http'
+
 class Notifier
   FIREBASE_API_URL = "https://fcm.googleapis.com/fcm/send"
 
@@ -12,7 +14,6 @@ class Notifier
     @users = users.dup
     @users << user if user
     @data = data
-    raise "Firebase Server Key is required" unless server_key
     @server_key = server_key
   end
 
@@ -24,8 +25,10 @@ class Notifier
         "Authorization" => "key=#{@server_key}"
       }
       @users.each_slice(1000).each do |users|
-        res = ::Net::HTTP.post(uri, payload(users).to_json, headers)
-        puts res
+        response = ::Net::HTTP.post(uri, payload(users).to_json, headers)
+        if response.code != "200"
+          Rails.logger.error("Failed to send Firebase notification. #{response.inspect}")
+        end
       end
     end
   end
@@ -34,7 +37,7 @@ class Notifier
 
   def payload(users)
     instance_ids = users.map(&:instance_id)
-    instance_id.compact!
+    instance_ids.compact!
     {
       registration_ids: instance_ids,
       data: @data
