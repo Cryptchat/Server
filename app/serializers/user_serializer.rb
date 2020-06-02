@@ -12,11 +12,11 @@ class UserSerializer < ActiveModel::Serializer
   )
 
   def updated_at
-    object.updated_at.to_f
+    (object.updated_at.to_f * 1000).round
   end
 
   def created_at
-    object.created_at.to_f
+    (object.created_at.to_f * 1000).round
   end
 end
 

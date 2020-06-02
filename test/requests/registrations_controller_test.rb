@@ -20,17 +20,14 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#register without id param creates a registration record" do
-    ENV["CRYPTCHAT_SENDER_ID"] = "35234324234"
     post "/register.json", params: { country_code: "111", phone_number: "1111" }
     assert_equal(200, response.status)
     id = response.parsed_body["id"]
     record = Registration.find(id)
     assert_equal("1111", record.phone_number)
     assert_equal("111", record.country_code)
-    assert_equal("35234324234", response.parsed_body["sender_id"])
+    assert_equal("53042389432432", response.parsed_body["sender_id"]) # From Rails.configuration.firebase[:sender_id]
     assert_nil(record.user_id)
-  ensure
-    ENV.delete("CRYPTCHAT_SENDER_ID")
   end
 
   test "#register without id param doesn't create registration if number already exists on the system" do

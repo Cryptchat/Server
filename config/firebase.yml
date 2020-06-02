@@ -1,0 +1,11 @@
+development:
+  sender_id: <%= ENV.fetch("CRYPTCHAT_FIREBASE_SENDER_ID") { "8385024350325" } %>
+  server_key: <%= ENV.fetch("CRYPTCHAT_FIREBASE_SERVER_KEY") { "someserverkeygoesinhere" } %>
+
+production:
+  sender_id: <%= ENV.fetch("CRYPTCHAT_FIREBASE_SENDER_ID") %>
+  server_key: <%= ENV.fetch("CRYPTCHAT_FIREBASE_SERVER_KEY") %>
+
+test:
+  sender_id: "53042389432432"
+  server_key: "someserverkeygoesinheretestenv"

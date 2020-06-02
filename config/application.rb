@@ -40,5 +40,8 @@ module Cryptchat
     config.token_pbkdf2_iterations = 30000
 
     config.user_ephemeral_keys_max_count = 1000
+    config.firebase = YAML.load(ERB.new(
+      YAML.load_file("#{Rails.root}/config/firebase.yml")[Rails.env].to_yaml
+    ).result).symbolize_keys
   end
 end

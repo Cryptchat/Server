@@ -11,5 +11,6 @@ Rails.application.routes.draw do
     post "ephemeral-keys/grab.json" => "ephemeral_keys#grab"
 
     get "sync/users.json" => "users#sync"
+    get "sync/messages.json" => "messages#sync"
   end
 end

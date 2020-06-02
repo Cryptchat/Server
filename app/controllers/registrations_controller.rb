@@ -40,7 +40,7 @@ class RegistrationsController < ApplicationController
       record.generate_token!
       puts record.verification_token unless Rails.env.test?
       #### send SMS message here ####
-      render json: { id: record.id, sender_id: ENV["CRYPTCHAT_SENDER_ID"] }
+      render json: { id: record.id, sender_id: Rails.configuration.firebase[:sender_id] }
     end
   end
 end

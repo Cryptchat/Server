@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Fabricator(:registration) do
   country_code { sequence(:country_code).to_s }
   phone_number { sequence(:phone_number).to_s }

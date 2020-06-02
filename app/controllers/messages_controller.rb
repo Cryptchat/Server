@@ -28,6 +28,18 @@ class MessagesController < ApplicationController
     render unprocessable_entity_response(ex.message)
   end
 
+  def sync
+    last_seen_id = params[:last_seen_id] || 0
+    # user_id = current_user.id
+    user_id = params[:user_id]
+    messages = Message
+      .where(receiver_user_id: user_id)
+      .where("id > ?", last_seen_id)
+      .order(:created_at)
+      .limit(50)
+    render json: messages, status: 200
+  end
+
   private
 
   def validate_optional_params!
