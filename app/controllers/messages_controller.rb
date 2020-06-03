@@ -35,7 +35,7 @@ class MessagesController < ApplicationController
     messages = Message
       .where(receiver_user_id: user_id)
       .where("id > ?", last_seen_id)
-      .order(:created_at)
+      .order(:id)
       .limit(50)
     render json: messages, status: 200
   end

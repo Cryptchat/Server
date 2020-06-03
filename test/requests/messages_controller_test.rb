@@ -94,11 +94,11 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     msg4 = Fabricate(:message, sender_user_id: sender1.id, receiver_user_id: current_user.id)
     msg5 = Fabricate(:message, sender_user_id: current_user.id, receiver_user_id: sender1.id)
 
-    get '/sync/messages.json', params: { user_id: current_user.id }
+    post '/sync/messages.json', params: { user_id: current_user.id }
     assert_equal(200, response.status)
     assert_equal([msg1, msg2, msg3, msg4].map(&:id), response.parsed_body["messages"].map { |m| m["id"] })
 
-    get '/sync/messages.json', params: { user_id: current_user.id, last_seen_id: msg2.id }
+    post '/sync/messages.json', params: { user_id: current_user.id, last_seen_id: msg2.id }
     assert_equal(200, response.status)
     assert_equal([msg3, msg4].map(&:id), response.parsed_body["messages"].map { |m| m["id"] })
   end
