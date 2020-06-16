@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class RegistrationsController < ApplicationController
   def knock
     render json: {
@@ -24,9 +25,11 @@ class RegistrationsController < ApplicationController
 
         ActiveRecord::Base.transaction do
           user.save!
+          auth_token = AuthToken.generate(user)
           record.user_id = user.id
           record.save!
         end
+        response.set_header(CurrentUserImplementer::AUTH_TOKEN_HEADER, auth_token.unhashed_token)
         render json: { id: user.id }
       else
         render json: { messages: [result[:reason]] }, status: 403
