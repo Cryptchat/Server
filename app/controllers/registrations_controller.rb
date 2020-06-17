@@ -23,14 +23,14 @@ class RegistrationsController < ApplicationController
           instance_id: params[:instance_id]&.to_s
         )
 
+        auth_token = nil
         ActiveRecord::Base.transaction do
           user.save!
           auth_token = AuthToken.generate(user)
           record.user_id = user.id
           record.save!
         end
-        response.set_header(CurrentUserImplementer::AUTH_TOKEN_HEADER, auth_token.unhashed_token)
-        render json: { id: user.id }
+        render json: { id: user.id, auth_token: auth_token.unhashed_token }
       else
         render json: { messages: [result[:reason]] }, status: 403
       end

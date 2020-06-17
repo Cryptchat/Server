@@ -73,8 +73,10 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       instance_id: "dfwersadsad"
     }
     assert_equal(200, response.status)
+    assert_equal(32, response.parsed_body["auth_token"].size)
     record.reload
     assert(record.user)
+    assert_equal(record.user.id, response.parsed_body["id"])
     assert_equal(record.user.phone_number, record.phone_number)
     assert_equal(record.user.country_code, record.country_code)
     assert_equal("dfwersadsad", record.user.instance_id)

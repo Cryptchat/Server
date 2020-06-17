@@ -15,7 +15,7 @@ class CurrentUserImplementerTest < ActiveSupport::TestCase
     @auth_token = AuthToken.generate(@user)
   end
 
-  test 'sdsd' do
+  test 'auth tokens rotation' do
     freeze_time
     unhashed_token = @auth_token.unhashed_token
     assert_equal(false, @auth_token.seen)
@@ -60,10 +60,47 @@ class CurrentUserImplementerTest < ActiveSupport::TestCase
     impl.refresh_tokens(res_headers)
     @auth_token.reload
     assert_equal(false, @auth_token.seen)
+    assert_equal(old_previous, @auth_token.previous_auth_token)
+    assert_equal({}, res_headers)
+
+    travel(5.minutes)
+    time = Time.zone.now
+    impl = implementer(unhashed_token)
+    assert_equal(@user.id, impl.current_user.id)
+    res_headers = {}
+    impl.refresh_tokens(res_headers)
+    @auth_token.reload
+    assert_equal(false, @auth_token.seen)
     assert_equal(time, @auth_token.rotated_at)
-    assert_not_equal(never_arrived_token, @auth_token.auth_token)
     assert_equal(old_previous, @auth_token.previous_auth_token)
     assert_equal(AuthToken.hash_token(unhashed_token), @auth_token.previous_auth_token)
+    assert_not_equal(never_arrived_token, @auth_token.auth_token)
+    assert_not_equal(@auth_token.previous_auth_token, @auth_token.auth_token)
+    assert_equal(
+      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_HEADER]),
+      @auth_token.auth_token
+    )
+
+    new_token = res_headers[CurrentUserImplementer::AUTH_TOKEN_HEADER]
+    impl = implementer(new_token)
+    assert_equal(@user.id, impl.current_user.id)
+    res_headers = {}
+    impl.refresh_tokens(res_headers)
+    @auth_token.reload
+    assert_equal(true, @auth_token.seen)
+    assert_equal(AuthToken.hash_token(unhashed_token), @auth_token.previous_auth_token)
+
+    travel(16.minutes)
+    time = Time.zone.now
+    impl = implementer(new_token)
+    assert_equal(@user.id, impl.current_user.id)
+    res_headers = {}
+    impl.refresh_tokens(res_headers)
+    @auth_token.reload
+    assert_equal(false, @auth_token.seen)
+    assert_equal(time, @auth_token.rotated_at)
+    assert_not_equal(AuthToken.hash_token(unhashed_token), @auth_token.previous_auth_token)
+    assert_equal(AuthToken.hash_token(new_token), @auth_token.previous_auth_token)
     assert_equal(
       AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_HEADER]),
       @auth_token.auth_token
