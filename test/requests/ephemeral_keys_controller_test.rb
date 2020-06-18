@@ -45,7 +45,7 @@ class EphemeralKeysControllerTest < CryptchatIntegrationTest
     keys2 = (6..9).map { |n| { id: n, key: "key#{n}" } }
     post '/ephemeral-keys.json', params: { keys: keys2 }
     assert_equal(200, response.status)
-    assert_equal( keys + keys2, formatted_ephemeral_keys(user))
+    assert_equal(keys + keys2, formatted_ephemeral_keys(user))
   end
 
   test '#top_up requires logged in user' do

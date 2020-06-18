@@ -51,4 +51,44 @@ class UsersControllerTest < CryptchatIntegrationTest
     assert_equal(1, users_json.size)
     assert_equal(users.last.id, users_json.first["id"])
   end
+
+  test '#update should... wait for it... update users' do
+    user = sign_in(
+      Fabricate(
+        :user,
+        country_code: '1234',
+        phone_number: '555443333',
+        instance_id: '840239402394',
+        name: 'osama'
+      )
+    )
+    put '/users.json', params: { user: {} }
+    assert_equal(400, response.status)
+    assert_equal('param is missing or the value is empty: user', response.parsed_body["messages"].first)
+    user.reload
+    assert_equal('osama', user.name)
+    assert_equal('1234', user.country_code)
+    assert_equal('555443333', user.phone_number)
+    assert_equal('840239402394', user.instance_id)
+
+    put '/users.json', params: { user: { name: 'johnny' } }
+    assert_equal(200, response.status)
+    user.reload
+    assert_equal('johnny', user.name)
+    assert_equal('1234', user.country_code)
+    assert_equal('555443333', user.phone_number)
+    assert_equal('840239402394', user.instance_id)
+
+    put '/users.json', params: { user: {
+      country_code: '76543',
+      phone_number: '2902940240',
+      instance_id: '04032940950235235'
+    } }
+    assert_equal(200, response.status)
+    user.reload
+    assert_equal('johnny', user.name)
+    assert_equal('76543', user.country_code)
+    assert_equal('2902940240', user.phone_number)
+    assert_equal('04032940950235235', user.instance_id)
+  end
 end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy]
   before_action :ensure_logged_in
 
   def sync
@@ -11,12 +10,12 @@ class UsersController < ApplicationController
     render json: users
   end
 
-  # PATCH/PUT /user/1
   def update
-    if @user.update(user_params)
+    user = current_user
+    if user.update(user_params)
       render success_response
     else
-      render unprocessable_entity_response(@user.errors.full_messages)
+      render unprocessable_entity_response(user.errors.full_messages)
     end
   end
 
@@ -24,6 +23,11 @@ class UsersController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def user_params
-    params.require(:user).permit(:country_code, :phone_number, :instance_id)
+    params.require(:user).permit(
+      :country_code,
+      :phone_number,
+      :instance_id,
+      :name
+    )
   end
 end

@@ -63,7 +63,7 @@ class MessagesControllerTest < CryptchatIntegrationTest
     assert_equal(422, response.status)
     assert_equal(I18n.t("sepk_present_but_not_ekioud"), response.parsed_body["messages"].first)
 
-    post "/message.json", params: { 
+    post "/message.json", params: {
       message: message_params.merge(ephemeral_key_id_on_user_device: 11)
     }
     assert_equal(422, response.status)
@@ -73,7 +73,7 @@ class MessagesControllerTest < CryptchatIntegrationTest
       receiver,
       data: { command: MessagesController::SYNC_MESSAGES_COMMAND }
     )
-    post "/message.json", params: { 
+    post "/message.json", params: {
       message: message_params.merge(
         sender_ephemeral_public_key: "pubkey",
         ephemeral_key_id_on_user_device: 11

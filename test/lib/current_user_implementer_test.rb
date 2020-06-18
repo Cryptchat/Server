@@ -36,7 +36,7 @@ class CurrentUserImplementerTest < ActiveSupport::TestCase
 
     travel(16.minutes)
     time = Time.zone.now
-    
+
     impl = implementer(unhashed_token)
     assert_equal(@user.id, impl.current_user.id)
     res_headers = {}
