@@ -16,6 +16,22 @@ class ActiveSupport::TestCase
   # fixtures :all
 
   # Add more helper methods to be used by all tests here...
+
+  private
+
+  def stub_firebase(receivers, data:)
+    receivers = [receivers] unless Array === receivers
+    stub_request(:post, Notifier::FIREBASE_API_URI.to_s).with(
+      body: {
+        registration_ids: receivers.map(&:instance_id),
+        data: data
+      }.to_json,
+      headers: {
+        "Content-Type" => "application/json",
+        "Authorization" => "key=someserverkeygoesinheretestenv" # From Rails.configuration.firebase[:server_key]
+      }
+    )
+  end
 end
 
 module CryptchatIntegrationSessionPatch

@@ -59,6 +59,8 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#register doesn't reset token if registration is confirmed" do
+    notified_users = [Fabricate(:user), Fabricate(:user)]
+
     SecureRandom.stub :rand, 0.123456789123456789 do
       post "/register.json", params: { country_code: "111", phone_number: "1111" }
     end
@@ -66,6 +68,10 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     record = Registration.find(response.parsed_body["id"])
     assert_nil(record.user_id)
 
+    stub_firebase(
+      notified_users,
+      data: { command: RegistrationsController::SYNC_USERS_COMMAND }
+    )
     post "/register.json", params: {
       id: record.id,
       verification_token: "12345678",

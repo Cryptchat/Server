@@ -13,7 +13,7 @@ class MessageSerializer < ActiveModel::Serializer
   )
 
   def created_at
-    (object.created_at.to_f * 1000).round
+    (object.created_at.to_f * 1000).floor
   end
 end
 

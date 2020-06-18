@@ -3,6 +3,8 @@
 class MessagesController < ApplicationController
   class InvalidOptionalParams < StandardError; end
 
+  SYNC_MESSAGES_COMMAND = "sync_messages"
+
   before_action :ensure_logged_in
 
   # POST /message
@@ -16,7 +18,7 @@ class MessagesController < ApplicationController
       notifier = Notifier.new(
         user: @message.receiver,
         data: {
-          command: "sync_messages"
+          command: SYNC_MESSAGES_COMMAND
         }
       )
       notifier.notify

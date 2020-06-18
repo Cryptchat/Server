@@ -34,7 +34,10 @@ class MessagesControllerTest < CryptchatIntegrationTest
       iv: SecureRandom.hex,
       receiver_user_id: receiver.id
     }
-    stub_firebase(receiver)
+    stub_firebase(
+      receiver,
+      data: { command: MessagesController::SYNC_MESSAGES_COMMAND }
+    )
     post "/message.json", params: { message: message_params }
     assert_equal(200, response.status)
     message = Message.find(response.parsed_body["message"]["id"])
@@ -66,7 +69,10 @@ class MessagesControllerTest < CryptchatIntegrationTest
     assert_equal(422, response.status)
     assert_equal(I18n.t("ekioud_present_but_not_sepk"), response.parsed_body["messages"].first)
 
-    stub_firebase(receiver)
+    stub_firebase(
+      receiver,
+      data: { command: MessagesController::SYNC_MESSAGES_COMMAND }
+    )
     post "/message.json", params: { 
       message: message_params.merge(
         sender_ephemeral_public_key: "pubkey",
@@ -90,7 +96,10 @@ class MessagesControllerTest < CryptchatIntegrationTest
       receiver_user_id: receiver.id,
       sender_user_id: sender.id
     }
-    stub_firebase(receiver)
+    stub_firebase(
+      receiver,
+      data: { command: MessagesController::SYNC_MESSAGES_COMMAND }
+    )
     post "/message.json", params: { message: message_params }
     assert_equal(403, response.status)
     assert_equal(I18n.t("action_requires_user"), response.parsed_body["messages"].first)
@@ -120,20 +129,5 @@ class MessagesControllerTest < CryptchatIntegrationTest
     post '/sync/messages.json', params: { user_id: Fabricate(:user) }
     assert_equal(403, response.status)
     assert_equal(I18n.t("action_requires_user"), response.parsed_body["messages"].first)
-  end
-
-  private
-
-  def stub_firebase(receiver)
-    stub_request(:post, Notifier::FIREBASE_API_URI.to_s).with(
-      body: {
-        registration_ids: [receiver.instance_id],
-        data: { command: "sync_messages" }
-      }.to_json,
-      headers: {
-        "Content-Type" => "application/json",
-        "Authorization" => "key=someserverkeygoesinheretestenv" # From Rails.configuration.firebase[:server_key]
-      }
-    )
   end
 end

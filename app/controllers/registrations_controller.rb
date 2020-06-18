@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class RegistrationsController < ApplicationController
+  SYNC_USERS_COMMAND = "sync_users"
+
   def knock
     render json: {
       is_cryptchat: true,
@@ -30,6 +32,12 @@ class RegistrationsController < ApplicationController
           record.user_id = user.id
           record.save!
         end
+        Notifier.new(
+          users: User.where("id <> ?", user.id).select(:id, :instance_id),
+          data: {
+            command: SYNC_USERS_COMMAND
+          }
+        ).notify
         render json: { id: user.id, auth_token: auth_token.unhashed_token }
       else
         render json: { messages: [result[:reason]] }, status: 403
