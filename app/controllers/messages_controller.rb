@@ -3,14 +3,14 @@
 class MessagesController < ApplicationController
   class InvalidOptionalParams < StandardError; end
 
-  # before_action :set_message, only: [:show, :update, :destroy]
+  before_action :ensure_logged_in
 
   # POST /message
   # can't use send as the method name cuz that would override
   # ruby's send method.
   def transmit
     validate_optional_params!
-    # message_params.merge!(sender_user_id: current_user.id)
+    message_params.merge!(sender_user_id: current_user.id)
     @message = Message.new(message_params)
     if @message.save
       notifier = Notifier.new(
@@ -30,8 +30,7 @@ class MessagesController < ApplicationController
 
   def sync
     last_seen_id = params[:last_seen_id] || 0
-    # user_id = current_user.id
-    user_id = params[:user_id]
+    user_id = current_user.id
     messages = Message
       .where(receiver_user_id: user_id)
       .where("id > ?", last_seen_id)
@@ -65,15 +64,13 @@ class MessagesController < ApplicationController
       :body,
       :mac,
       :iv,
-      :receiver_user_id,
-      :sender_user_id
+      :receiver_user_id
     ])
     @message_params ||= params.require(:message).permit(
       :body,
       :mac,
       :iv,
       :receiver_user_id,
-      :sender_user_id, # TODO: remove when we have current user
       :sender_ephemeral_public_key,
       :ephemeral_key_id_on_user_device
     )

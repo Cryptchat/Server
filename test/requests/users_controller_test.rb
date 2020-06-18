@@ -2,15 +2,24 @@
 
 require 'test_helper'
 
-class UsersControllerTest < ActionDispatch::IntegrationTest
+class UsersControllerTest < CryptchatIntegrationTest
+  test '#sync requires logged in user' do
+    Fabricate(:user)
+
+    post '/sync/users.json'
+    assert_equal(403, response.status)
+    assert_equal(I18n.t("action_requires_user"), response.parsed_body["messages"].first)
+  end
+
   test '#sync returns all users when no updated_at param is given' do
+    sign_in
+
     users = [
       Fabricate(:user),
       Fabricate(:user),
       Fabricate(:user),
       Fabricate(:user)
     ]
-
     post '/sync/users.json'
     assert_equal(200, response.status)
     users_json = response.parsed_body["users"]
@@ -27,6 +36,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#sync returns all users updated at or after updated_at param' do
+    sign_in
     time = 15.minutes.from_now
     time2 = 20.minutes.from_now
     users = [

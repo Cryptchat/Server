@@ -39,11 +39,18 @@ end
 
 ActionDispatch::Integration::Session.prepend(CryptchatIntegrationSessionPatch)
 
-class ActionDispatch::IntegrationTest
-  def with_user_signed_in(user)
+class CryptchatIntegrationTest < ActionDispatch::IntegrationTest
+  def sign_in(user = Fabricate(:user))
     Thread.current[:cryptchat_sign_in_user_id] = user.id
-    yield
-  ensure
+    user
+  end
+
+  def sign_out
     Thread.current[:cryptchat_sign_in_user_id] = nil
+  end
+
+  def before_setup
+    sign_out
+    super
   end
 end

@@ -1,54 +1,63 @@
 # frozen_string_literal: true
 require 'test_helper'
 
-class EphemeralKeysControllerTest < ActionDispatch::IntegrationTest
+class EphemeralKeysControllerTest < CryptchatIntegrationTest
   test '#top_up complains when no keys param is given' do
-    user = Fabricate(:user)
-    post '/ephemeral-keys.json', params: { user_id: user.id }
+    sign_in
+    post '/ephemeral-keys.json'
     assert_equal(422, response.status)
     assert_equal(I18n.t("keys_param_incorrect_format"), response.parsed_body["messages"].first)
   end
 
   test '#top_up complains when keys param is not an array' do
-    user = Fabricate(:user)
-    post '/ephemeral-keys.json', params: { user_id: user.id, keys: "dsa" }
+    sign_in
+    post '/ephemeral-keys.json'
     assert_equal(422, response.status)
     assert_equal(I18n.t("keys_param_incorrect_format"), response.parsed_body["messages"].first)
   end
 
   test '#top_up complains when given too many keys' do
-    user = Fabricate(:user)
+    user = sign_in
     keys = (1..15).map { |n| { id: n, key: "key#{n}" } }
-    post '/ephemeral-keys.json', params: { user_id: user.id, keys: keys }
+    post '/ephemeral-keys.json', params: { keys: keys }
     assert_equal(403, response.status)
     assert_equal(I18n.t("keys_count_exceeds_limit"), response.parsed_body["messages"].first)
 
     keys = (1..5).map { |n| { id: n, key: "key#{n}" } }
-    post '/ephemeral-keys.json', params: { user_id: user.id, keys: keys }
+    post '/ephemeral-keys.json', params: { keys: keys }
     assert_equal(200, response.status)
     assert_equal(keys, formatted_ephemeral_keys(user))
 
     keys2 = (6..20).map { |n| { id: n, key: "key#{n}" } }
-    post '/ephemeral-keys.json', params: { user_id: user.id, keys: keys2 }
+    post '/ephemeral-keys.json', params: { keys: keys2 }
     assert_equal(403, response.status)
     assert_equal(I18n.t("keys_count_exceeds_limit"), response.parsed_body["messages"].first)
     assert_equal(keys, formatted_ephemeral_keys(user))
   end
 
   test '#top_up adds keys' do
-    user = Fabricate(:user)
+    user = sign_in
     keys = (1..5).map { |n| { id: n, key: "key#{n}" } }
-    post '/ephemeral-keys.json', params: { user_id: user.id, keys: keys }
+    post '/ephemeral-keys.json', params: { keys: keys }
     assert_equal(200, response.status)
     assert_equal(keys, formatted_ephemeral_keys(user))
 
     keys2 = (6..9).map { |n| { id: n, key: "key#{n}" } }
-    post '/ephemeral-keys.json', params: { user_id: user.id, keys: keys2 }
+    post '/ephemeral-keys.json', params: { keys: keys2 }
     assert_equal(200, response.status)
     assert_equal( keys + keys2, formatted_ephemeral_keys(user))
   end
 
+  test '#top_up requires logged in user' do
+    user = Fabricate(:user)
+    keys = (1..5).map { |n| { id: n, key: "key#{n}" } }
+    post '/ephemeral-keys.json', params: { user_id: user.id, keys: keys }
+    assert_equal(403, response.status)
+    assert_equal(I18n.t("action_requires_user"), response.parsed_body["messages"].first)
+  end
+
   test '#grab returns key when there is one' do
+    sign_in
     user = Fabricate(:user)
     keys = (1..1).map { |n| { id: n + 10, key: "key#{n + 10}" } }
     user.add_ephemeral_keys!(keys)
@@ -64,9 +73,20 @@ class EphemeralKeysControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#grab requires user_id param' do
+    sign_in
     post '/ephemeral-keys/grab.json'
     assert_equal(400, response.status)
     assert_equal("param is missing or the value is empty: user_id", response.parsed_body["messages"].first)
+  end
+
+  test '#grab requires logged in user' do
+    user = Fabricate(:user)
+    keys = (1..1).map { |n| { id: n + 10, key: "key#{n + 10}" } }
+    user.add_ephemeral_keys!(keys)
+
+    post '/ephemeral-keys/grab.json', params: { user_id: user.id }
+    assert_equal(403, response.status)
+    assert_equal(I18n.t("action_requires_user"), response.parsed_body["messages"].first)
   end
 
   private

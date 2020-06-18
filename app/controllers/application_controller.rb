@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
+  class NotLoggedIn < StandardError; end
+
   after_action :refresh_tokens
+
+  rescue_from NotLoggedIn do |err|
+    render json: { messages: [I18n.t("action_requires_user")] }, status: 403
+  end
 
   rescue_from ActionController::ParameterMissing do |err|
     render json: { messages: [err.message] }, status: 400
@@ -9,6 +15,10 @@ class ApplicationController < ActionController::API
 
   rescue_from ActiveRecord::RecordInvalid do |err|
     render unprocessable_entity_response(err.message)
+  end
+
+  def ensure_logged_in
+    raise NotLoggedIn.new unless current_user
   end
 
   def success_response

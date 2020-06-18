@@ -2,9 +2,9 @@
 
 require 'test_helper'
 
-class MessagesControllerTest < ActionDispatch::IntegrationTest
+class MessagesControllerTest < CryptchatIntegrationTest
   test "#transmit requires body, mac, iv and receiver_user_id" do
-    sender = Fabricate(:user)
+    sender = sign_in
     receiver = Fabricate(:user)
 
     post "/message.json", params: { message: {} }
@@ -16,8 +16,7 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
       body: "this is my encrypted secret message",
       mac: SecureRandom.hex,
       iv: SecureRandom.hex,
-      receiver_user_id: receiver.id,
-      sender_user_id: sender.id
+      receiver_user_id: receiver.id
     }
     %i[body mac iv receiver_user_id].each do |param|
       post "/message.json", params: { message: message_params.slice(*(message_params.keys - [param])) }
@@ -27,14 +26,13 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#transmit creates message" do
-    sender = Fabricate(:user)
+    sender = sign_in
     receiver = Fabricate(:user)
     message_params = {
       body: "this is my encrypted secret message",
       mac: SecureRandom.hex,
       iv: SecureRandom.hex,
-      receiver_user_id: receiver.id,
-      sender_user_id: sender.id
+      receiver_user_id: receiver.id
     }
     stub_firebase(receiver)
     post "/message.json", params: { message: message_params }
@@ -43,19 +41,18 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal(message_params[:body], message.body)
     assert_equal(message_params[:mac], message.mac)
     assert_equal(message_params[:iv], message.iv)
-    assert_equal(message_params[:receiver_user_id], message.receiver_user_id)
-    assert_equal(message_params[:sender_user_id], message.sender_user_id)
+    assert_equal(receiver.id, message.receiver_user_id)
+    assert_equal(sender.id, message.sender_user_id)
   end
 
   test '#transmit optional params must be all present or none' do
-    sender = Fabricate(:user)
+    sender = sign_in
     receiver = Fabricate(:user)
     message_params = {
       body: "this is my encrypted secret message",
       mac: SecureRandom.hex,
       iv: SecureRandom.hex,
-      receiver_user_id: receiver.id,
-      sender_user_id: sender.id
+      receiver_user_id: receiver.id
     }
     post "/message.json", params: {
       message: message_params.merge(sender_ephemeral_public_key: "pubkey")
@@ -83,8 +80,24 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal(11, message.ephemeral_key_id_on_user_device)
   end
 
+  test '#transmit requires logged in user' do
+    sender = Fabricate(:user)
+    receiver = Fabricate(:user)
+    message_params = {
+      body: "this is my encrypted secret message",
+      mac: SecureRandom.hex,
+      iv: SecureRandom.hex,
+      receiver_user_id: receiver.id,
+      sender_user_id: sender.id
+    }
+    stub_firebase(receiver)
+    post "/message.json", params: { message: message_params }
+    assert_equal(403, response.status)
+    assert_equal(I18n.t("action_requires_user"), response.parsed_body["messages"].first)
+  end
+
   test '#sync returns messages for current user' do
-    current_user = Fabricate(:user)
+    current_user = sign_in
     sender1 = Fabricate(:user)
     sender2 = Fabricate(:user)
 
@@ -94,13 +107,19 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     msg4 = Fabricate(:message, sender_user_id: sender1.id, receiver_user_id: current_user.id)
     msg5 = Fabricate(:message, sender_user_id: current_user.id, receiver_user_id: sender1.id)
 
-    post '/sync/messages.json', params: { user_id: current_user.id }
+    post '/sync/messages.json'
     assert_equal(200, response.status)
     assert_equal([msg1, msg2, msg3, msg4].map(&:id), response.parsed_body["messages"].map { |m| m["id"] })
 
-    post '/sync/messages.json', params: { user_id: current_user.id, last_seen_id: msg2.id }
+    post '/sync/messages.json', params: { last_seen_id: msg2.id }
     assert_equal(200, response.status)
     assert_equal([msg3, msg4].map(&:id), response.parsed_body["messages"].map { |m| m["id"] })
+  end
+
+  test '#sync requires logged in user' do
+    post '/sync/messages.json', params: { user_id: Fabricate(:user) }
+    assert_equal(403, response.status)
+    assert_equal(I18n.t("action_requires_user"), response.parsed_body["messages"].first)
   end
 
   private

@@ -2,10 +2,11 @@
 
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
+  before_action :ensure_logged_in
 
   def sync
     updated_at = params[:updated_at]&.to_f&.floor || 0
-    users = User.where("EXTRACT(EPOCH FROM updated_at) >= ?", updated_at)
+    users = User.where("EXTRACT(EPOCH FROM updated_at) >= ? AND id <> ?", updated_at, current_user.id)
     render json: users
   end
 

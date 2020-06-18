@@ -37,3 +37,4 @@ en:
   keys_count_exceeds_limit: "Cannot add this batch of keys because keys count would exceed the limit."
   sepk_present_but_not_ekioud: "A ephemeral_key_id_on_user_device parameter is required."
   ekioud_present_but_not_sepk: "A sender_ephemeral_public_key parameter is required."
+  action_requires_user: "This action can not be performed without a logged-in user"

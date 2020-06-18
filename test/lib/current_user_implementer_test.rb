@@ -47,7 +47,7 @@ class CurrentUserImplementerTest < ActiveSupport::TestCase
     assert_not_equal(@auth_token.previous_auth_token, @auth_token.auth_token)
     assert_equal(AuthToken.hash_token(unhashed_token), @auth_token.previous_auth_token)
     assert_equal(
-      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_HEADER]),
+      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_RESPONSE_HEADER]),
       @auth_token.auth_token
     )
 
@@ -77,11 +77,11 @@ class CurrentUserImplementerTest < ActiveSupport::TestCase
     assert_not_equal(never_arrived_token, @auth_token.auth_token)
     assert_not_equal(@auth_token.previous_auth_token, @auth_token.auth_token)
     assert_equal(
-      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_HEADER]),
+      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_RESPONSE_HEADER]),
       @auth_token.auth_token
     )
 
-    new_token = res_headers[CurrentUserImplementer::AUTH_TOKEN_HEADER]
+    new_token = res_headers[CurrentUserImplementer::AUTH_TOKEN_RESPONSE_HEADER]
     impl = implementer(new_token)
     assert_equal(@user.id, impl.current_user.id)
     res_headers = {}
@@ -102,7 +102,7 @@ class CurrentUserImplementerTest < ActiveSupport::TestCase
     assert_not_equal(AuthToken.hash_token(unhashed_token), @auth_token.previous_auth_token)
     assert_equal(AuthToken.hash_token(new_token), @auth_token.previous_auth_token)
     assert_equal(
-      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_HEADER]),
+      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_RESPONSE_HEADER]),
       @auth_token.auth_token
     )
   end
