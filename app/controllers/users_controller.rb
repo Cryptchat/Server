@@ -15,7 +15,10 @@ class UsersController < ApplicationController
     if user.update(user_params)
       render success_response
     else
-      render unprocessable_entity_response(user.errors.full_messages)
+      render error_response(
+        status: 422,
+        messages: user.errors.full_messages
+      )
     end
   end
 

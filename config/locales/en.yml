@@ -38,3 +38,5 @@ en:
   sepk_present_but_not_ekioud: "A ephemeral_key_id_on_user_device parameter is required."
   ekioud_present_but_not_sepk: "A sender_ephemeral_public_key parameter is required."
   action_requires_user: "This action can not be performed without a logged-in user"
+  registration_record_not_found: "Registration record with the provided ID couldn't be found"
+  eph_key_grab_failed_user_not_found: "Failed to get ephemeral key because the target user couldn't be found"

@@ -32,7 +32,11 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
   test "#register without id param doesn't create registration if number already exists on the system" do
     user = Fabricate(:user)
-    Fabricate(:registration, phone_number: user.phone_number, country_code: user.country_code, user_id: user.id)
+    Fabricate(:registration,
+      phone_number: user.phone_number,
+      country_code: user.country_code,
+      user_id: user.id
+    )
 
     post "/register.json", params: { country_code: user.country_code, phone_number: user.phone_number }
     assert_equal(403, response.status)

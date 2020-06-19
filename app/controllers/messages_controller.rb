@@ -24,10 +24,16 @@ class MessagesController < ApplicationController
       notifier.notify
       render json: { message: { id: @message.id } }, status: 200
     else
-      render unprocessable_entity_response(@message.errors.full_messages)
+      render error_response(
+        status: 422,
+        messages: @message.errors.full_messages
+      )
     end
   rescue InvalidOptionalParams => ex
-    render unprocessable_entity_response(ex.message)
+    render error_response(
+      status: 422,
+      message: ex.message
+    )
   end
 
   def sync

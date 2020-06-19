@@ -14,7 +14,10 @@ class RegistrationsController < ApplicationController
     if params[:id]
       verification_token, identity_key = params.require([:verification_token, :identity_key])
       record = Registration.find_by(id: params[:id])
-      return render json: {}, status: 404 unless record
+      return render error_response(
+        status: 404,
+        message: I18n.t("registration_record_not_found")
+      ) unless record
 
       result = record.verify(verification_token)
       if result[:success]
@@ -40,13 +43,19 @@ class RegistrationsController < ApplicationController
         ).notify
         render json: { id: user.id, auth_token: auth_token.unhashed_token }
       else
-        render json: { messages: [result[:reason]] }, status: 403
+        render error_response(
+          status: 403,
+          message: result[:reason]
+        )
       end
     else
       country_code, phone_number = params.require([:country_code, :phone_number])
       record = Registration.find_or_initialize_by(country_code: country_code, phone_number: phone_number)
       if record && record.user_id.present?
-        return render json: { messages: [I18n.t("number_already_registered")] }, status: 403
+        return render error_response(
+          status: 403,
+          message: I18n.t("number_already_registered")
+        )
       end
       record.generate_token!
       puts record.verification_token unless Rails.env.test?

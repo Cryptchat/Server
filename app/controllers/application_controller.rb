@@ -6,19 +6,37 @@ class ApplicationController < ActionController::API
   after_action :refresh_tokens
 
   rescue_from NotLoggedIn do |err|
-    render json: { messages: [I18n.t("action_requires_user")] }, status: 403
+    render error_response(
+      status: 403,
+      message: I18n.t("action_requires_user")
+    )
   end
 
   rescue_from ActionController::ParameterMissing do |err|
-    render json: { messages: [err.message] }, status: 400
+    render error_response(
+      status: 400,
+      message: err.message
+    )
   end
 
   rescue_from ActiveRecord::RecordInvalid do |err|
-    render unprocessable_entity_response(err.message)
+    render error_response(
+      status: 422,
+      message: err.message
+    )
   end
 
   def ensure_logged_in
     raise NotLoggedIn.new unless current_user
+  end
+
+  def error_response(status:, messages: [], message: nil)
+    messages = messages.dup
+    messages << message if message && message.size > 0
+    {
+      status: status,
+      json: { messages: messages }
+    }
   end
 
   def success_response
