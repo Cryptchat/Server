@@ -16,6 +16,9 @@
 # Ignore uploaded files in development.
 /storage/*
 !/storage/.keep
+/storage/avatars/*
+!/storage/avatars
+!/storage/avatars/.keep
 .byebug_history
 
 # Ignore master key for decrypting credentials and more.
