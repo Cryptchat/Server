@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :ephemeral_keys
 
   has_one :registration
+  belongs_to :avatar, class_name: "Upload", optional: true
 
   validates :name, length: { maximum: 255 }
 

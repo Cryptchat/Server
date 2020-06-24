@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_16_055948) do
+ActiveRecord::Schema.define(version: 2020_06_24_123700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,12 +60,21 @@ ActiveRecord::Schema.define(version: 2020_06_16_055948) do
     t.index ["country_code", "phone_number"], name: "index_registrations_on_country_code_and_phone_number", unique: true
   end
 
+  create_table "uploads", force: :cascade do |t|
+    t.string "sha", null: false
+    t.string "extension", limit: 20, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["sha"], name: "index_uploads_on_sha", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name", limit: 255
     t.string "country_code", limit: 10, null: false
     t.string "phone_number", limit: 50, null: false
     t.string "instance_id"
     t.string "identity_key", null: false
+    t.bigint "avatar_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["country_code", "phone_number"], name: "index_users_on_country_code_and_phone_number", unique: true

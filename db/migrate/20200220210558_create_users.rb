@@ -7,6 +7,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :phone_number, null: false, limit: 50
       t.string :instance_id
       t.string :identity_key, null: false
+      t.bigint :avatar_id
 
       t.timestamps null: false
     end

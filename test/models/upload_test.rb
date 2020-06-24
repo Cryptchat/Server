@@ -1,0 +1,31 @@
+# frozen_string_literal: true
+
+require 'test_helper'
+
+class UploadTest < ActiveSupport::TestCase
+  test '.create_avatar raises error if file is not JPEG' do
+    path = file_fixture("fakeimage.jpeg")
+    err = assert_raises Upload::UploadsError do
+      Upload.create_avatar!(path)
+    end
+    assert_equal(I18n.t("incorrect_jpeg_format"), err.message)
+  end
+
+  test '.create_avatar creates upload record' do
+    path = file_fixture("realimage.jpeg")
+    upload = Upload.create_avatar!(path)
+    assert_equal(File.read(path.to_s), File.read(upload.path))
+  ensure
+    cleanup_avatars_dir
+  end
+
+  test 'create_avatar returns existing uplpoad if it already exists' do
+    path = file_fixture("realimage.jpeg")
+    upload = Upload.create_avatar!(path)
+
+    duplicate = Upload.create_avatar!(path)
+    assert_equal(upload.id, duplicate.id)
+  ensure
+    cleanup_avatars_dir
+  end
+end

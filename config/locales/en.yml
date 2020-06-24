@@ -40,3 +40,5 @@ en:
   action_requires_user: "This action can not be performed without a logged-in user"
   registration_record_not_found: "Registration record with the provided ID couldn't be found"
   eph_key_grab_failed_user_not_found: "Failed to get ephemeral key because the target user couldn't be found"
+  jpeg_file_required: "This endpoint requires a JPEG file"
+  incorrect_jpeg_format: "The file you provided is not a valid JPEG file"
