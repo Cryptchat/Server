@@ -36,7 +36,7 @@ class RegistrationsController < ApplicationController
           record.save!
         end
         Notifier.new(
-          users: User.where("id <> ?", user.id).select(:id, :instance_id),
+          users: User.where("id <> ?", user.id).select(:id, :instance_id).order(:id),
           data: {
             command: SYNC_USERS_COMMAND
           }
