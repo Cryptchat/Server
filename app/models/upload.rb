@@ -30,8 +30,8 @@ class Upload < ApplicationRecord
         extension: "jpeg"
       )
       upload.save!
-      FileUtils.cp(file_path, upload.path)
     end
+    FileUtils.cp(file_path, upload.path) unless File.exists?(upload.path)
     upload
   end
 end
