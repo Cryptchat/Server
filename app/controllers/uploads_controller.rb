@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UploadsController < ApplicationController
-  before_action :ensure_logged_in
+  before_action :ensure_logged_in, except: [:get_avatar]
 
   def upload_avatar
     file = params[:file]
@@ -23,7 +23,7 @@ class UploadsController < ApplicationController
   end
 
   def get_avatar
-    upload = Upload.find_by(id: params[:id])
+    upload = Upload.find_by(sha: params[:sha])
     if !upload
       return render error_response(
         status: 404,

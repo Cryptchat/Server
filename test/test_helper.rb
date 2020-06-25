@@ -34,7 +34,7 @@ class ActiveSupport::TestCase
   end
 
   def cleanup_avatars_dir
-    files = Dir.glob(Rails.root.join('storage', 'avatars', '*'))
+    files = Dir.glob(Rails.root.join('storage', 'avatars', 'tests', '*'))
     FileUtils.rm_rf(files)
   end
 end

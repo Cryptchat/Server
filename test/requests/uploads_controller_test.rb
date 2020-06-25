@@ -54,23 +54,18 @@ class UploadsControllerTest < CryptchatIntegrationTest
     assert_equal(200, response.status)
     upload = Upload.find_by(id: response.parsed_body["avatar_id"])
 
-    sign_out
-    get "/avatar/#{upload.id}"
-    assert_equal(403, response.status)
-
     sign_in
-    get "/avatar/#{upload.id}"
+    get "/avatar/#{upload.sha}"
     assert_equal(200, response.status)
     assert_equal('binary', response.headers["Content-Transfer-Encoding"])
-    assert_includes(response.headers['Content-Disposition'], upload.sha)
-    assert_includes(response.headers['Content-Disposition'], upload.extension)
+    assert_includes(response.headers['Content-Disposition'], "#{upload.sha}.#{upload.extension}")
   ensure
     cleanup_avatars_dir
   end
 
   test '#get_avatar returns 404 for not found uploads' do
     sign_in
-    get "/avatar/932849234"
+    get "/avatar/21321ab987cfe"
     assert_equal(404, response.status)
   end
 end

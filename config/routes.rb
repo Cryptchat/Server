@@ -13,6 +13,6 @@ Rails.application.routes.draw do
     post "sync/users.json" => "users#sync"
     post "sync/messages.json" => "messages#sync"
     post "avatar.json" => "uploads#upload_avatar"
-    get "avatar/:id" => "uploads#get_avatar"
+    get "avatar/:sha" => "uploads#get_avatar"
   end
 end

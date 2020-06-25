@@ -6,7 +6,11 @@ class Upload < ApplicationRecord
   class UploadsError < StandardError; end
 
   def path
-    @path ||= File.join(AVATARS_DIR, "#{self.sha}.#{self.extension}")
+    return @path if @path
+    args = [AVATARS_DIR]
+    args << "tests" if Rails.env.test?
+    args << "#{self.sha}.#{self.extension}"
+    @path ||= File.join(args)
   end
 
   def self.create_avatar!(file_path)
