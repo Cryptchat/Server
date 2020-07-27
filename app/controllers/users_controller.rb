@@ -12,7 +12,11 @@ class UsersController < ApplicationController
 
   def update
     user = current_user
-    if user.update(user_params)
+    new_attrs = user_params
+    if name = new_attrs[:name]
+      new_attrs[:name] = name.strip
+    end
+    if user.update(new_attrs)
       render success_response
     else
       render error_response(

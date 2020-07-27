@@ -71,7 +71,7 @@ class UsersControllerTest < CryptchatIntegrationTest
     assert_equal('555443333', user.phone_number)
     assert_equal('840239402394', user.instance_id)
 
-    put '/users.json', params: { user: { name: 'johnny' } }
+    put '/users.json', params: { user: { name: ' johnny ' } }
     assert_equal(200, response.status)
     user.reload
     assert_equal('johnny', user.name)
