@@ -14,6 +14,7 @@ class UploadsController < ApplicationController
 
     upload = Upload.create_avatar!(file.path)
     current_user.update!(avatar_id: upload.id)
+    User.notify_users(excluded_user_id: current_user.id)
     render json: { avatar_id: upload.id }, status: 200
   rescue Upload::UploadsError => err
     render error_response(

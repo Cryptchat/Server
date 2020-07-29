@@ -4,6 +4,7 @@ require 'net/http'
 
 class Notifier
   FIREBASE_API_URI = URI("https://fcm.googleapis.com/fcm/send")
+  SYNC_USERS_COMMAND = "sync_users"
 
   def initialize(user: nil, users: [], data:)
     @users = users.dup

@@ -74,7 +74,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     stub_firebase(
       notified_users,
-      data: { command: RegistrationsController::SYNC_USERS_COMMAND }
+      data: { command: Notifier::SYNC_USERS_COMMAND }
     )
     post "/register.json", params: {
       id: record.id,

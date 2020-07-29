@@ -17,6 +17,7 @@ class UsersController < ApplicationController
       new_attrs[:name] = name.strip
     end
     if user.update(new_attrs)
+      User.notify_users(excluded_user_id: user.id)
       render success_response
     else
       render error_response(

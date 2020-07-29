@@ -8,7 +8,8 @@ class UserSerializer < ActiveModel::Serializer
     :phone_number,
     :identity_key,
     :updated_at,
-    :created_at
+    :created_at,
+    :avatar_url
   )
 
   def updated_at
@@ -17,6 +18,10 @@ class UserSerializer < ActiveModel::Serializer
 
   def created_at
     (object.created_at.to_f * 1000).floor
+  end
+
+  def avatar_url
+    object.avatar&.url
   end
 end
 

@@ -12,6 +12,17 @@ class User < ApplicationRecord
 
   validates :name, length: { maximum: 255 }
 
+  def self.notify_users(excluded_user_id:)
+    Notifier.new(
+      users: User
+        .where("id <> ?", excluded_user_id)
+        .select(:id, :instance_id).order(:id),
+      data: {
+        command: Notifier::SYNC_USERS_COMMAND
+      }
+    ).notify
+  end
+
   def atomic_delete_and_return_ephemeral_key!
     arg = Rails.env.test? ? {} : { isolation: :serializable }
     query = <<~SQL

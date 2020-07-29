@@ -13,6 +13,10 @@ class Upload < ApplicationRecord
     @path ||= File.join(args)
   end
 
+  def url
+    "/avatar/#{self.sha}"
+  end
+
   def self.create_avatar!(file_path)
     File.open(file_path) do |file|
       # JPEG files magic bytes
