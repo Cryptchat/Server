@@ -2,6 +2,7 @@
 
 class CurrentUserImplementer
   AUTH_TOKEN_HEADER = "HTTP_CRYPTCHAT_AUTH_TOKEN"
+  AUTH_USER_ID_HEADER = "HTTP_CRYPTCHAT_AUTH_USER_ID"
   AUTH_TOKEN_RESPONSE_HEADER = "Cryptchat-Auth-Token"
 
   TEST_USER_AUTH_TOKEN_HEADER = "Cryptchat-Auth-Token-Tests"
@@ -13,7 +14,8 @@ class CurrentUserImplementer
   def current_user
     return @current_user if @performed_lookup
     unhashed_token = @env[AUTH_TOKEN_HEADER]
-    @auth_token ||= AuthToken.lookup(unhashed_token)
+    user_id = @env[AUTH_USER_ID_HEADER]&.to_i
+    @auth_token ||= AuthToken.lookup(unhashed_token, user_id)
     @current_user ||= @auth_token&.user
     @performed_lookup = true
     @current_user

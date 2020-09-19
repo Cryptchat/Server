@@ -65,6 +65,7 @@ end
 #  phone_number :string(50)       not null
 #  instance_id  :string
 #  identity_key :string           not null
+#  avatar_id    :bigint
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #

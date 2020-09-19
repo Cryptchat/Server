@@ -39,3 +39,18 @@ class Upload < ApplicationRecord
     upload
   end
 end
+
+# == Schema Information
+#
+# Table name: uploads
+#
+#  id         :bigint           not null, primary key
+#  sha        :string           not null
+#  extension  :string(20)       not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_uploads_on_sha  (sha) UNIQUE
+#

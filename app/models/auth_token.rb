@@ -19,11 +19,18 @@ class AuthToken < ApplicationRecord
       record
     end
 
-    def lookup(unhashed_token)
-      return if !unhashed_token || unhashed_token.size != 32
+    def lookup(unhashed_token, user_id)
+      return if !unhashed_token ||
+        unhashed_token.size != 32 ||
+        !user_id ||
+        user_id <= 0
 
       hashed_token = hash_token(unhashed_token)
-      record = AuthToken.find_by("auth_token = :token OR previous_auth_token = :token", token: hashed_token)
+      record = AuthToken.find_by(
+        "user_id = :user_id AND (auth_token = :token OR previous_auth_token = :token)",
+        token: hashed_token,
+        user_id: user_id
+      )
       return unless record
 
       if !record.seen && record.auth_token == hashed_token
@@ -71,3 +78,23 @@ class AuthToken < ApplicationRecord
     end
   end
 end
+
+# == Schema Information
+#
+# Table name: auth_tokens
+#
+#  id                  :bigint           not null, primary key
+#  auth_token          :string           not null
+#  previous_auth_token :string           not null
+#  user_id             :bigint           not null
+#  rotated_at          :datetime         not null
+#  seen                :boolean          default("false"), not null
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#
+# Indexes
+#
+#  index_auth_tokens_on_auth_token           (auth_token) UNIQUE
+#  index_auth_tokens_on_previous_auth_token  (previous_auth_token) UNIQUE
+#  index_auth_tokens_on_user_id              (user_id)
+#
