@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  root "home#home"
   scope path: nil, constraints: { format: :json } do
     post "message.json" => "messages#transmit"
     put "users.json" => "users#update"

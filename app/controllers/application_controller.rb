@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
+  REMAINING_KEYS_COUNT_HEADER = "Cryptchat-Remaining-Keys-Count"
+
   class NotLoggedIn < StandardError; end
 
   after_action :refresh_tokens
+  after_action :include_cryptchat_headers
 
   rescue_from NotLoggedIn do |err|
     render error_response(
@@ -57,13 +60,19 @@ class ApplicationController < ActionController::API
 
   def current_user
     if Rails.env.test? && user_id = request.headers[CurrentUserImplementer::TEST_USER_AUTH_TOKEN_HEADER]
-      return @current_user ||= User.find(user_id)
+      return @current_user ||= User.find_by(id: user_id)
     end
     current_user_implementer.current_user
   end
 
   def refresh_tokens
     current_user_implementer.refresh_tokens(response.headers)
+  end
+
+  def include_cryptchat_headers
+    if current_user
+      response.headers[REMAINING_KEYS_COUNT_HEADER] = current_user.ephemeral_keys_count
+    end
   end
 
   private

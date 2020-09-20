@@ -53,6 +53,10 @@ class User < ApplicationRecord
     end
     self.ephemeral_keys.insert_all(mapped)
   end
+
+  def ephemeral_keys_count
+    EphemeralKey.where(user_id: self.id).count
+  end
 end
 
 # == Schema Information

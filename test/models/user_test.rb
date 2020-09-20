@@ -59,6 +59,24 @@ class UserTest < ActiveSupport::TestCase
     assert_equal([injection], user.ephemeral_keys.pluck(:key))
   end
 
+  test '#ephemeral_keys_count returns count of remaining ephemeral keys' do
+    user = Fabricate(:user)
+    user2 = Fabricate(:user)
+    assert_equal(0, user.ephemeral_keys_count)
+    assert_equal(0, user2.ephemeral_keys_count)
+
+    3.times { Fabricate(:ephemeral_key, user_id: user.id) }
+    5.times { Fabricate(:ephemeral_key, user_id: user2.id) }
+    assert_equal(3, user.ephemeral_keys_count)
+    assert_equal(5, user2.ephemeral_keys_count)
+
+    user.atomic_delete_and_return_ephemeral_key!
+    user2.atomic_delete_and_return_ephemeral_key!
+    user2.atomic_delete_and_return_ephemeral_key!
+    assert_equal(2, user.ephemeral_keys_count)
+    assert_equal(3, user2.ephemeral_keys_count)
+  end
+
   private
 
   def user_keys(user)
