@@ -47,3 +47,6 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'fast_xor', platform: :mri
 gem 'active_model_serializers'
+
+gem 'haml'
+gem 'sass-rails'

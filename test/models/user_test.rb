@@ -103,8 +103,10 @@ end
 #  instance_id  :string
 #  identity_key :string           not null
 #  avatar_id    :bigint
+#  admin        :boolean          default("false"), not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  suspended    :boolean          default("false"), not null
 #
 # Indexes
 #

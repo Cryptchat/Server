@@ -8,6 +8,8 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :instance_id
       t.string :identity_key, null: false
       t.bigint :avatar_id
+      t.boolean :admin, null: false, default: false
+      t.boolean :suspended, null: false, default: false
 
       t.timestamps null: false
     end

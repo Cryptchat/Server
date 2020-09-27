@@ -1,0 +1,12 @@
+- @users.each do |user|
+  %div.user-row
+    %div.user-avatar-and-info
+      %div.user-avatar-container
+        %img.user-avatar{ src: user.avatar&.url || image_path('default-avatar.png') }
+      %div.user-details
+        %div= user.display_phone_number
+        - if user.name&.size > 0
+          %div= user.name
+    %div.user-actions
+      = form_with(url: admin_user_path(user), method: 'PUT') do
+        %button{ name: 'suspend', value: 'true' }= t('.suspend')

@@ -15,5 +15,10 @@ Rails.application.routes.draw do
     post "sync/messages.json" => "messages#sync"
     post "avatar.json" => "uploads#upload_avatar"
     get "avatar/:sha" => "uploads#get_avatar"
+    post "generate-admin-token.json" => "admin_tokens#generate"
+  end
+  namespace :admin do
+    get '', to: redirect('admin/users')
+    resources :users, only: %i[index update]
   end
 end

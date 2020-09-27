@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
+  include CurrentUser
+
   REMAINING_KEYS_COUNT_HEADER = "Cryptchat-Remaining-Keys-Count"
+  IS_ADMIN_HEADER = "Cryptchat-Admin"
 
   class NotLoggedIn < StandardError; end
+  class Unauthorized < StandardError; end
 
   after_action :refresh_tokens
   after_action :include_cryptchat_headers
@@ -12,6 +16,13 @@ class ApplicationController < ActionController::API
     render error_response(
       status: 403,
       message: I18n.t("action_requires_user")
+    )
+  end
+
+  rescue_from Unauthorized do |err|
+    render error_response(
+      status: 403,
+      message: I18n.t("unauthorized_to_perform_action")
     )
   end
 
@@ -58,13 +69,6 @@ class ApplicationController < ActionController::API
     }
   end
 
-  def current_user
-    if Rails.env.test? && user_id = request.headers[CurrentUserImplementer::TEST_USER_AUTH_TOKEN_HEADER]
-      return @current_user ||= User.find_by(id: user_id)
-    end
-    current_user_implementer.current_user
-  end
-
   def refresh_tokens
     current_user_implementer.refresh_tokens(response.headers)
   end
@@ -72,12 +76,7 @@ class ApplicationController < ActionController::API
   def include_cryptchat_headers
     if current_user
       response.headers[REMAINING_KEYS_COUNT_HEADER] = current_user.ephemeral_keys_count
+      response.headers[IS_ADMIN_HEADER] = current_user.admin
     end
-  end
-
-  private
-
-  def current_user_implementer
-    @current_user_implementer ||= CurrentUserImplementer.new(request.env)
   end
 end

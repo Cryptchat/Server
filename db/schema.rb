@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_24_123700) do
+ActiveRecord::Schema.define(version: 2020_09_25_081606) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "admin_tokens", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "token", null: false
+    t.datetime "last_used_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_admin_tokens_on_user_id", unique: true
+  end
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string "auth_token", null: false
@@ -75,6 +84,7 @@ ActiveRecord::Schema.define(version: 2020_06_24_123700) do
     t.string "instance_id"
     t.string "identity_key", null: false
     t.bigint "avatar_id"
+    t.boolean "admin", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["country_code", "phone_number"], name: "index_users_on_country_code_and_phone_number", unique: true

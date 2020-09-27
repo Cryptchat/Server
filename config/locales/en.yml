@@ -30,6 +30,14 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  layouts:
+    admin:
+      settings: Settings
+      users: Users
+  admin:
+    users:
+      index:
+        suspend: Suspend
   too_much_time_passed: "Too much time has passed since the code was sent. Please register again."
   number_already_registered: "This number is already registered on the server. Please use a different number"
   incorrect_code: "Incorrect code. Please try again."
@@ -38,6 +46,7 @@ en:
   sepk_present_but_not_ekioud: "A ephemeral_key_id_on_user_device parameter is required."
   ekioud_present_but_not_sepk: "A sender_ephemeral_public_key parameter is required."
   action_requires_user: "This action can not be performed without a logged-in user"
+  unauthorized_to_perform_action: "You are not authorized to perform this action"
   registration_record_not_found: "Registration record with the provided ID couldn't be found"
   eph_key_grab_failed_user_not_found: "Failed to get ephemeral key because the target user couldn't be found"
   jpeg_file_required: "This endpoint requires a JPEG file"

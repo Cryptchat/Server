@@ -1,0 +1,21 @@
+.user-row {
+  margin-bottom: 2em;
+
+  .user-avatar-and-info {
+    display: flex;
+
+    .user-avatar-container {
+      width: 4em;
+      height: 4em;
+      margin-right: 1em;
+
+      .user-avatar {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+  .user-actions {
+    margin-top: .5em;
+  }
+}

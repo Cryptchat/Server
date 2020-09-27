@@ -13,7 +13,7 @@ require "action_controller/railtie"
 # require "action_text/engine"
 require "action_view/railtie"
 # require "action_cable/engine"
-# require "sprockets/railtie"
+require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems
@@ -33,7 +33,7 @@ module Cryptchat
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
-    config.api_only = true
+    # config.api_only = true
 
     config.autoload_paths += Dir["#{config.root}/lib"]
 
@@ -43,5 +43,6 @@ module Cryptchat
     config.firebase = YAML.load(ERB.new(
       YAML.load_file("#{Rails.root}/config/firebase.yml")[Rails.env].to_yaml
     ).result).symbolize_keys
+    config.assets.precompile += %w[.png]
   end
 end

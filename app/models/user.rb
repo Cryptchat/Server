@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :ephemeral_keys
 
   has_one :registration
+  has_one :admin_token
   belongs_to :avatar, class_name: "Upload", optional: true
 
   validates :name, length: { maximum: 255 }
@@ -57,6 +58,10 @@ class User < ApplicationRecord
   def ephemeral_keys_count
     EphemeralKey.where(user_id: self.id).count
   end
+
+  def display_phone_number
+    country_code + phone_number
+  end
 end
 
 # == Schema Information
@@ -70,8 +75,10 @@ end
 #  instance_id  :string
 #  identity_key :string           not null
 #  avatar_id    :bigint
+#  admin        :boolean          default("false"), not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  suspended    :boolean          default("false"), not null
 #
 # Indexes
 #

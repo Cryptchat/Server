@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+%html
+  %head
+    = stylesheet_link_tag "admin"
+  %body
+    %header.c-header
+      %div.wrap
+        %ul.nav
+          %li.nav-item{ class: current_page?(admin_users_path) ? 'active' : '' }
+            = link_to t('.users'), admin_users_path, class: 'nav-item-link'
+          %li.nav-item
+            %a.nav-item-link{ href: '/admin' }= t('.settings')
+    %div#main
+      = yield
