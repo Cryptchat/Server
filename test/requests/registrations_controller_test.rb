@@ -64,6 +64,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
   test "#register doesn't reset token if registration is confirmed" do
     notified_users = [Fabricate(:user), Fabricate(:user)].sort_by(&:id)
+    Fabricate(:user, suspended: true) # not notified
 
     SecureRandom.stub :rand, 0.123456789123456789 do
       post "/register.json", params: { country_code: "111", phone_number: "1111" }

@@ -17,6 +17,7 @@ class User < ApplicationRecord
     Notifier.new(
       users: User
         .where("id <> ?", excluded_user_id)
+        .where("NOT suspended")
         .select(:id, :instance_id).order(:id),
       data: {
         command: Notifier::SYNC_USERS_COMMAND

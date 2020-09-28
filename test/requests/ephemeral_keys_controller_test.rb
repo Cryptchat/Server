@@ -89,6 +89,16 @@ class EphemeralKeysControllerTest < CryptchatIntegrationTest
     assert_equal(I18n.t("action_requires_user"), response.parsed_body["messages"].first)
   end
 
+  test '#grab fails with 403 when target user is suspended' do
+    sign_in
+    user = Fabricate(:user, suspended: true)
+    keys = (1..1).map { |n| { id: n + 10, key: "key#{n + 10}" } }
+    user.add_ephemeral_keys!(keys)
+    post '/ephemeral-keys/grab.json', params: { user_id: user.id }
+    assert_equal(403, response.status)
+    assert_equal(I18n.t("recipient_is_suspended"), response.parsed_body["messages"].first)
+  end
+
   private
 
   def formatted_ephemeral_keys(user)

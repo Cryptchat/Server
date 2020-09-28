@@ -53,6 +53,8 @@ class UsersControllerTest < CryptchatIntegrationTest
   end
 
   test '#update should... wait for it... update users' do
+    notified_users = [Fabricate(:user), Fabricate(:user)].sort_by(&:id)
+    Fabricate(:user, suspended: true) # not notified
     user = sign_in(
       Fabricate(
         :user,
@@ -61,6 +63,10 @@ class UsersControllerTest < CryptchatIntegrationTest
         instance_id: '840239402394',
         name: 'osama'
       )
+    )
+    stub_firebase(
+      notified_users,
+      data: { command: Notifier::SYNC_USERS_COMMAND }
     )
     put '/users.json', params: { user: {} }
     assert_equal(400, response.status)

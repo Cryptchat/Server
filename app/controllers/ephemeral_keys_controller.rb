@@ -35,6 +35,11 @@ class EphemeralKeysController < ApplicationController
       message: I18n.t("eph_key_grab_failed_user_not_found")
     ) unless user
 
+    return render error_response(
+      status: 403,
+      message: I18n.t("recipient_is_suspended")
+    ) if user.suspended?
+
     key = user.atomic_delete_and_return_ephemeral_key!
     render json: (key || {})
   end

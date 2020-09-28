@@ -17,4 +17,12 @@ class ApplicationControllerTest < CryptchatIntegrationTest
     get '/'
     refute(response.headers.key?(ApplicationController::REMAINING_KEYS_COUNT_HEADER))
   end
+
+  test 'does not allow suspended users to perform any action' do
+    user = Fabricate(:user, suspended: true)
+    sign_in(user)
+    get '/'
+    assert_equal(403, response.status)
+    assert_equal(I18n.t('you_are_suspended'), response.parsed_body['messages'].first)
+  end
 end

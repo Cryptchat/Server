@@ -105,6 +105,21 @@ class MessagesControllerTest < CryptchatIntegrationTest
     assert_equal(I18n.t("action_requires_user"), response.parsed_body["messages"].first)
   end
 
+  test '#transmit fails when receiver is suspended' do
+    sender = sign_in
+    receiver = Fabricate(:user, suspended: true)
+    message_params = {
+      body: "this is my encrypted secret message",
+      mac: SecureRandom.hex,
+      iv: SecureRandom.hex,
+      receiver_user_id: receiver.id,
+      sender_user_id: sender.id
+    }
+    post "/message.json", params: { message: message_params }
+    assert_equal(403, response.status)
+    assert_equal(I18n.t("recipient_is_suspended"), response.parsed_body["messages"].first)
+  end
+
   test '#sync returns messages for current user' do
     current_user = sign_in
     sender1 = Fabricate(:user)

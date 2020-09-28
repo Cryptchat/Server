@@ -13,6 +13,13 @@ class MessagesController < ApplicationController
   def transmit
     validate_optional_params!
     message_params.merge!(sender_user_id: current_user.id)
+    receiver = User.find_by(id: message_params[:receiver_user_id])
+    if receiver&.suspended?
+      return render error_response(
+        status: 403,
+        message: I18n.t("recipient_is_suspended")
+      )
+    end
     @message = Message.new(message_params)
     if @message.save
       notifier = Notifier.new(

@@ -7,6 +7,8 @@ class ApplicationController < ActionController::API
   class NotLoggedIn < StandardError; end
   class Unauthorized < StandardError; end
 
+  before_action :ensure_not_suspended
+
   after_action :refresh_tokens
   after_action :include_cryptchat_headers
 
@@ -82,6 +84,15 @@ class ApplicationController < ActionController::API
 
   def current_user
     current_user_implementer.current_user
+  end
+
+  def ensure_not_suspended
+    if current_user&.suspended?
+      render error_response(
+        status: 403,
+        message: I18n.t("you_are_suspended")
+      )
+    end
   end
 
   private
