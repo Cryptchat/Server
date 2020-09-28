@@ -8,15 +8,19 @@
           %span= user.display_phone_number
           - if current_admin == user
             %span= t('.you')
-        - if user.name&.size > 0
+        - if (user.name&.size || 0) > 0
           %div= user.name
         - if user.suspended?
           %div
             %i= t('.suspended')
     %div.user-actions
-      = form_with(url: admin_user_path(user), method: 'PUT') do
-        - admin_btn = user.admin? ? 'revoke_admin' : 'grant_admin'
+      - suspend_url = user.suspended? ? admin_user_unsuspend_path(user) : admin_user_suspend_path(user)
+      = form_with(url: suspend_url, method: 'PUT') do
         - suspend_btn = user.suspended? ? 'unsuspend' : 'suspend'
-        - disabled = user == current_admin
-        %button{ name: admin_btn, value: 'true', disabled: disabled || user.suspended? }= t(".#{admin_btn}")
-        %button{ name: suspend_btn, value: 'true', disabled: disabled || user.admin? }= t(".#{suspend_btn}")
+        - disabled = (user == current_admin) || user.admin?
+        %button{ disabled: disabled }= t(".#{suspend_btn}")
+      - admin_url = user.admin? ? admin_user_revoke_admin_path(user) : admin_user_grant_admin_path(user)
+      = form_with(url: admin_url, method: 'PUT') do
+        - admin_btn = user.admin? ? 'revoke_admin' : 'grant_admin'
+        - disabled = (user == current_admin) || user.suspended?
+        %button{ name: admin_btn, value: 'true', disabled: disabled }= t(".#{admin_btn}")

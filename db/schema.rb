@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 2020_09_25_081606) do
     t.string "identity_key", null: false
     t.bigint "avatar_id"
     t.boolean "admin", default: false, null: false
+    t.boolean "suspended", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["country_code", "phone_number"], name: "index_users_on_country_code_and_phone_number", unique: true

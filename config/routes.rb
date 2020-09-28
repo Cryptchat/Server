@@ -18,7 +18,12 @@ Rails.application.routes.draw do
     post "generate-admin-token.json" => "admin_tokens#generate"
   end
   namespace :admin do
-    get '', to: redirect('admin/users')
-    resources :users, only: %i[index update]
+    get '' => 'admin#index'
+    resources :users, only: %i[index] do
+      put 'suspend'
+      put 'unsuspend'
+      put 'grant-admin'
+      put 'revoke-admin'
+    end
   end
 end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
-  include CurrentUser
-
   REMAINING_KEYS_COUNT_HEADER = "Cryptchat-Remaining-Keys-Count"
   IS_ADMIN_HEADER = "Cryptchat-Admin"
 
@@ -39,6 +37,8 @@ class ApplicationController < ActionController::API
       message: err.message
     )
   end
+
+  protected
 
   def ensure_logged_in
     raise NotLoggedIn.new unless current_user
@@ -78,5 +78,15 @@ class ApplicationController < ActionController::API
       response.headers[REMAINING_KEYS_COUNT_HEADER] = current_user.ephemeral_keys_count
       response.headers[IS_ADMIN_HEADER] = current_user.admin
     end
+  end
+
+  def current_user
+    current_user_implementer.current_user
+  end
+
+  private
+
+  def current_user_implementer
+    @current_user_implementer ||= CurrentUserImplementer.new(request)
   end
 end

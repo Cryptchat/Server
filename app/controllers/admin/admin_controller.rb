@@ -4,12 +4,12 @@ class Admin::AdminController < ActionController::Base
   ADMIN_TOKEN_HEADER = "Cryptchat-Admin-Token"
   ADMIN_ID_HEADER = "Cryptchat-Admin-Id"
 
-  # before_action :ensure_admin
+  before_action :ensure_admin
   layout 'admin'
   helper_method :current_admin
 
   def index
-    render
+    redirect_to :admin_users, status: 301
   end
 
   protected
@@ -19,7 +19,7 @@ class Admin::AdminController < ActionController::Base
   end
 
   def ensure_admin
-    raise ApplicationController::Unauthorized.new unless current_admin
+    raise ActionController::RoutingError.new('not found') unless current_admin
   end
 
   private

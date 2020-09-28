@@ -41,16 +41,24 @@ end
 
 module CryptchatIntegrationSessionPatch
   def process(method, path, **hash)
-    if user_id = Thread.current[:cryptchat_sign_in_user_id]
+    orig_headers = hash["headers"] || hash[:headers] || (hash[:headers] = {})
+    if user = User.find_by(id: Thread.current[:cryptchat_sign_in_user_id])
+      token = AuthToken.generate(user)
       hash ||= {}
       headers = {
-        CurrentUserImplementer::TEST_USER_AUTH_TOKEN_HEADER => user_id
+        CurrentUserImplementer::AUTH_USER_ID_HEADER => user.id,
+        CurrentUserImplementer::AUTH_TOKEN_HEADER => token.unhashed_token
       }
-      if hash["headers"]
-        hash["headers"].merge!(headers)
-      else
-        hash[:headers]&.merge!(headers) || hash[:headers] = headers
-      end
+      orig_headers.merge!(headers)
+      super(method, path, **hash)
+    elsif admin = User.find_by(id: Thread.current[:cryptchat_sign_in_admin_id])
+      token = AdminToken.create_for!(admin)
+      hash ||= {}
+      headers = {
+        Admin::AdminController::ADMIN_TOKEN_HEADER => token.unhashed_token,
+        Admin::AdminController::ADMIN_ID_HEADER => admin.id
+      }
+      orig_headers.merge!(headers)
       super(method, path, **hash)
     else
       super
@@ -70,8 +78,17 @@ class CryptchatIntegrationTest < ActionDispatch::IntegrationTest
     Thread.current[:cryptchat_sign_in_user_id] = nil
   end
 
+  def sign_admin_in(admin)
+    Thread.current[:cryptchat_sign_in_admin_id] = admin.id
+  end
+
+  def sign_admin_out
+    Thread.current[:cryptchat_sign_in_admin_id] = nil
+  end
+
   def before_setup
     sign_out
+    sign_admin_out
     super
   end
 end

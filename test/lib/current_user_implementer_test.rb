@@ -3,12 +3,17 @@
 require 'test_helper'
 
 class CurrentUserImplementerTest < ActiveSupport::TestCase
+  def header_reformat(header)
+    "HTTP_#{header.upcase.gsub('-', '_')}"
+  end
+
   def implementer(token, user_id)
-    CurrentUserImplementer.new(Rack::MockRequest.env_for(
-      '/',
-      CurrentUserImplementer::AUTH_TOKEN_HEADER => token,
-      CurrentUserImplementer::AUTH_USER_ID_HEADER => user_id
-    ))
+    CurrentUserImplementer.new(
+      ActionDispatch::Request.new({
+        header_reformat(CurrentUserImplementer::AUTH_TOKEN_HEADER) => token,
+        header_reformat(CurrentUserImplementer::AUTH_USER_ID_HEADER) => user_id
+      })
+    )
   end
 
   setup do
@@ -57,7 +62,7 @@ class CurrentUserImplementerTest < ActiveSupport::TestCase
     assert_not_equal(@auth_token.previous_auth_token, @auth_token.auth_token)
     assert_equal(AuthToken.hash_token(unhashed_token), @auth_token.previous_auth_token)
     assert_equal(
-      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_RESPONSE_HEADER]),
+      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_HEADER]),
       @auth_token.auth_token
     )
 
@@ -87,11 +92,11 @@ class CurrentUserImplementerTest < ActiveSupport::TestCase
     assert_not_equal(never_arrived_token, @auth_token.auth_token)
     assert_not_equal(@auth_token.previous_auth_token, @auth_token.auth_token)
     assert_equal(
-      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_RESPONSE_HEADER]),
+      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_HEADER]),
       @auth_token.auth_token
     )
 
-    new_token = res_headers[CurrentUserImplementer::AUTH_TOKEN_RESPONSE_HEADER]
+    new_token = res_headers[CurrentUserImplementer::AUTH_TOKEN_HEADER]
     impl = implementer(new_token, @user.id)
     assert_equal(@user.id, impl.current_user.id)
     res_headers = {}
@@ -112,7 +117,7 @@ class CurrentUserImplementerTest < ActiveSupport::TestCase
     assert_not_equal(AuthToken.hash_token(unhashed_token), @auth_token.previous_auth_token)
     assert_equal(AuthToken.hash_token(new_token), @auth_token.previous_auth_token)
     assert_equal(
-      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_RESPONSE_HEADER]),
+      AuthToken.hash_token(res_headers[CurrentUserImplementer::AUTH_TOKEN_HEADER]),
       @auth_token.auth_token
     )
   end
