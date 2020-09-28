@@ -1,4 +1,5 @@
-// font sizes adapted from Discourse
+// lots of things here copied from discourse
+
 $font-up-6: 2.296em;
 $font-up-5: 2em;
 $font-up-4: 1.7511em;
@@ -13,6 +14,44 @@ $font-down-4: 0.5745em;
 $font-down-5: 0.5em;
 $font-down-6: 0.4355em;
 
-$primary-color: #2C3E50;
-$secondary-color: #FFFFFF;
-$tertiary-color: #3E7DF7;
+$primary: #2C3E50;
+$secondary: #FFFFFF;
+$tertiary: #3E7DF7;
+
+@function dc-color-brightness($color) {
+  @return (
+    (red($color) * 0.299) + (green($color) * 0.587) + (blue($color) * 0.114)
+  );
+}
+
+@function dark-light-diff(
+  $adjusted-color,
+  $comparison-color,
+  $lightness,
+  $darkness
+) {
+  @if dc-color-brightness($adjusted-color) <
+    dc-color-brightness($comparison-color)
+  {
+    @return scale-color($adjusted-color, $lightness: $lightness);
+  } @else {
+    @return scale-color($adjusted-color, $lightness: $darkness);
+  }
+}
+
+$primary-very-low: dark-light-diff($primary, $secondary, 97%, -82%) !default;
+$primary-low: dark-light-diff($primary, $secondary, 90%, -78%) !default;
+$primary-low-mid: dark-light-diff($primary, $secondary, 70%, -45%) !default;
+$primary-medium: dark-light-diff($primary, $secondary, 50%, -35%) !default;
+$primary-high: dark-light-diff($primary, $secondary, 30%, -25%) !default;
+$primary-very-high: dark-light-diff($primary, $secondary, 15%, -10%) !default;
+
+$secondary-low: dark-light-diff($secondary, $primary, 70%, -70%) !default;
+$secondary-medium: dark-light-diff($secondary, $primary, 50%, -50%) !default;
+$secondary-high: dark-light-diff($secondary, $primary, 30%, -35%) !default;
+$secondary-very-high: dark-light-diff($secondary, $primary, 7%, -7%) !default;
+
+$tertiary-low: dark-light-diff($tertiary, $secondary, 85%, -65%) !default;
+$tertiary-medium: dark-light-diff($tertiary, $secondary, 50%, -45%) !default;
+$tertiary-high: dark-light-diff($tertiary, $secondary, 20%, -25%) !default;
+$tertiary-hover: dark-light-diff($tertiary, $secondary, -25%, -25%) !default;

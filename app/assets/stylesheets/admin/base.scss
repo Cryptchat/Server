@@ -1,8 +1,8 @@
 html {
   font-size: 0.938em;
   font-family: Helvetica, Arial, sans-serif;
-  color: $primary-color;
-  background: $secondary-color;
+  color: $primary;
+  background: $secondary;
 }
 
 body {
@@ -10,13 +10,14 @@ body {
 }
 
 a {
-  color: $tertiary-color;
+  color: $tertiary;
 }
 
 input[type="submit"], button {
   border: unset;
   cursor: pointer;
-  padding: .3em .6em;
+  padding: .5em .8em;
+  margin-right: .5em;
 
   &:focus {
     outline: unset;
@@ -32,9 +33,9 @@ input[type="submit"], button {
 
 .c-header {
   height: 3.5em;
-  background: $primary-color;
+  background: $primary;
   box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.25);
-  color: $secondary-color;
+  color: $secondary;
   position: sticky;
   top: 0;
   .wrap {
@@ -61,10 +62,10 @@ input[type="submit"], button {
     box-sizing: border-box;
 
     &.active {
-      background: $tertiary-color;
+      background: $tertiary;
 
       .nav-item-link {
-        color: $secondary-color;
+        color: $secondary;
       }
       &:not(:last-child) {
         .nav-item-link {
@@ -74,5 +75,17 @@ input[type="submit"], button {
     .nav-item-link {
       padding: .5em 1em;
     }
+  }
+}
+
+.flash-notice-container {
+  text-align: center;
+  margin-bottom: 1em;
+
+  .flash-notice {
+    text-align: center;
+    background: $tertiary-low;
+    display: inline-block;
+    padding: .5em 1em;
   }
 }

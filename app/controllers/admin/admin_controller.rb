@@ -6,6 +6,7 @@ class Admin::AdminController < ActionController::Base
 
   # before_action :ensure_admin
   layout 'admin'
+  helper_method :current_admin
 
   def index
     render

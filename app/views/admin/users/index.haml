@@ -1,12 +1,22 @@
 - @users.each do |user|
   %div.user-row
-    %div.user-avatar-and-info
+    %div.user-avatar-and-info{ class: user.suspended? ? 'suspended' : '' }
       %div.user-avatar-container
         %img.user-avatar{ src: user.avatar&.url || image_path('default-avatar.png') }
       %div.user-details
-        %div= user.display_phone_number
+        %div
+          %span= user.display_phone_number
+          - if current_admin == user
+            %span= t('.you')
         - if user.name&.size > 0
           %div= user.name
+        - if user.suspended?
+          %div
+            %i= t('.suspended')
     %div.user-actions
       = form_with(url: admin_user_path(user), method: 'PUT') do
-        %button{ name: 'suspend', value: 'true' }= t('.suspend')
+        - admin_btn = user.admin? ? 'revoke_admin' : 'grant_admin'
+        - suspend_btn = user.suspended? ? 'unsuspend' : 'suspend'
+        - disabled = user == current_admin
+        %button{ name: admin_btn, value: 'true', disabled: disabled || user.suspended? }= t(".#{admin_btn}")
+        %button{ name: suspend_btn, value: 'true', disabled: disabled || user.admin? }= t(".#{suspend_btn}")

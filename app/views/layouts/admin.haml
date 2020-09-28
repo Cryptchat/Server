@@ -11,4 +11,7 @@
           %li.nav-item
             %a.nav-item-link{ href: '/admin' }= t('.settings')
     %div#main
+      - flash.each do |type, msg|
+        %div.flash-notice-container
+          %div.flash-notice= msg
       = yield

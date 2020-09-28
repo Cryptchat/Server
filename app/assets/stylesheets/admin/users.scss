@@ -4,6 +4,9 @@
   .user-avatar-and-info {
     display: flex;
 
+    &.suspended {
+      opacity: .6;
+    }
     .user-avatar-container {
       width: 4em;
       height: 4em;

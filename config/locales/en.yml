@@ -38,6 +38,20 @@ en:
     users:
       index:
         suspend: Suspend
+        unsuspend: Unsuspend
+        grant_admin: Grant Admin
+        revoke_admin: Revoke Admin
+        you: (You)
+        suspended: Suspended
+      update:
+        suspend_successful: "%{user} is now suspended."
+        unsuspend_successful: "%{user} is now unsuspended."
+        grant_admin_successful: "%{user} is now an admin."
+        revoke_admin_successful: "%{user} is no longer an admin."
+        cant_suspend_admin: "Cannot suspend an admin user. Please revoke admin rights and try again."
+        cant_admin_suspended: "Cannot grant admin rights to a suspended user. Please unsuspend and try again."
+        cant_change_yourself: "You cannot suspend or revoke admin rights to yourself."
+        unknown_action: "Unknown or unspecified action."
   too_much_time_passed: "Too much time has passed since the code was sent. Please register again."
   number_already_registered: "This number is already registered on the server. Please use a different number"
   incorrect_code: "Incorrect code. Please try again."
