@@ -23,13 +23,13 @@ class ServerSettingTest < ActiveSupport::TestCase
 
   test '.parse_yaml raises when setting name has unpermitted characters' do
     assert_raise(ServerSetting::BadName) do
-      ServerSetting.parse_yaml({ :"Setting" => 1 }.to_yaml)
+      ServerSetting.parse_yaml({ "Setting": 1 }.to_yaml)
     end
     assert_raise(ServerSetting::BadName) do
-      ServerSetting.parse_yaml({ :"setting-asasa" => 1 }.to_yaml)
+      ServerSetting.parse_yaml({ "setting-asasa": 1 }.to_yaml)
     end
     assert_raise(ServerSetting::BadName) do
-      ServerSetting.parse_yaml({ :"setting asasa" => 1 }.to_yaml)
+      ServerSetting.parse_yaml({ "setting asasa": 1 }.to_yaml)
     end
   end
 
@@ -80,19 +80,19 @@ class ServerSettingTest < ActiveSupport::TestCase
     )
     assert_equal(
       %w[setting1 setting6 setting11],
-      parsed.select { |k,v| v[:type] == ServerSetting::TYPES[:integer] }.keys
+      parsed.select { |k, v| v[:type] == ServerSetting::TYPES[:integer] }.keys
     )
     assert_equal(
       %w[setting2 setting7 setting12],
-      parsed.select { |k,v| v[:type] == ServerSetting::TYPES[:float] }.keys
+      parsed.select { |k, v| v[:type] == ServerSetting::TYPES[:float] }.keys
     )
     assert_equal(
       %w[setting3 setting8 setting13],
-      parsed.select { |k,v| v[:type] == ServerSetting::TYPES[:string] }.keys
+      parsed.select { |k, v| v[:type] == ServerSetting::TYPES[:string] }.keys
     )
     assert_equal(
       %w[setting4 setting5 setting9 setting10 setting14 setting15],
-      parsed.select { |k,v| v[:type] == ServerSetting::TYPES[:boolean] }.keys
+      parsed.select { |k, v| v[:type] == ServerSetting::TYPES[:boolean] }.keys
     )
     assert_equal(1, parsed[:setting1][:default_value])
     assert_equal(3.1, parsed[:setting2][:default_value])

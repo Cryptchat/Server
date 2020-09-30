@@ -21,7 +21,7 @@ class ServerSetting < ApplicationRecord
     float: 3,
     boolean: 4
   }
-  
+
   class << self
     def all_settings
       settings = []

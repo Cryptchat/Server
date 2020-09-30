@@ -39,7 +39,7 @@ class Admin::ServerSettingsControllerTest < CryptchatIntegrationTest
     }
     assert_equal(302, response.status)
     assert_equal('some new server name', ServerSetting.server_name)
-    
+
     put '/admin/settings/server_name', params: {
       perform: 'revert'
     }
