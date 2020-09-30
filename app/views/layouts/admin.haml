@@ -8,8 +8,8 @@
         %ul.nav
           %li.nav-item{ class: current_page?(admin_users_path) ? 'active' : '' }
             = link_to t('.users'), admin_users_path, class: 'nav-item-link'
-          %li.nav-item
-            %a.nav-item-link{ href: '/admin' }= t('.settings')
+          %li.nav-item{ class: current_page?(admin_settings_path) ? 'active' : '' }
+            = link_to t('.settings'), admin_settings_path, class: 'nav-item-link'
     %div#main
       - flash.each do |type, msg|
         %div.flash-notice-container

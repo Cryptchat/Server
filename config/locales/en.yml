@@ -54,6 +54,11 @@ en:
       revoke_admin:
         revoke_admin_successful: "%{user} is no longer an admin."
       cant_change_yourself: "You cannot suspend or revoke admin rights to yourself."
+    server_settings:
+      server_name: "This name will be used when users add this server to their devices."
+      index:
+        save: Save
+        revert: Revert
   too_much_time_passed: "Too much time has passed since the code was sent. Please register again."
   number_already_registered: "This number is already registered on the server. Please use a different number"
   incorrect_code: "Incorrect code. Please try again."

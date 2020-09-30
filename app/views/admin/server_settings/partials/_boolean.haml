@@ -1,0 +1,4 @@
+%input{ name: 'value', type: 'hidden', value: 'false' }
+- attrs = { name: 'value', value: 'true', type: 'checkbox' }
+- attrs.merge!(checked: 'true') if setting.value
+%input{ **attrs }

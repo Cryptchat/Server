@@ -1,0 +1,10 @@
+- @settings.each do |setting|
+  = form_with(url: "/admin/settings/#{setting.name}", method: 'PUT', class: ['setting-row', setting.partial]) do
+    %h3.setting-name= setting.display_name
+    %div.setting-content{ class: setting.overriden ? 'overriden' : '' }
+      = render "admin/server_settings/partials/#{setting.partial}", setting: setting
+      %div.setting-description= setting.description
+    %div.setting-actions
+      %button{ name: 'perform', value: 'save' }= t('.save')
+      - if setting.overriden
+        %button{ name: 'perform', value: 'revert' }= t('.revert')

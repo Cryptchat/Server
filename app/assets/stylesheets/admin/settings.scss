@@ -1,0 +1,35 @@
+.setting-row {
+  margin-bottom: 1.5em;
+
+  .setting-name {
+    margin-top: 0;
+    margin-bottom: .4em;
+  }
+  input {
+    margin-left: 0;
+    max-width: 40em;
+  }
+  .setting-description {
+    max-width: 40em;
+  }
+  .setting-content {
+    margin-bottom: .8em;
+    &.overriden {
+      input:not([type="checkbox"]) {
+        background: $tertiary-low;
+      }
+    }
+  }
+
+  &.boolean {
+    .setting-content {
+      display: flex;
+      align-items: center;
+    }
+  }
+  &:not(.boolean) {
+    .setting-description {
+      margin-top: .6em;
+    }
+  }
+}

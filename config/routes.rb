@@ -25,5 +25,8 @@ Rails.application.routes.draw do
       put 'grant-admin'
       put 'revoke-admin'
     end
+
+    get 'settings' => 'server_settings#index'
+    put 'settings/:name' => 'server_settings#update'
   end
 end

@@ -11,17 +11,27 @@ body {
 
 a {
   color: $tertiary;
+  text-decoration: unset;
 }
 
-input[type="submit"], button {
+button {
   border: unset;
   cursor: pointer;
   padding: .5em .8em;
   margin-right: .5em;
+  line-height: 1;
 
   &:focus {
     outline: unset;
   }
+}
+
+input:not([type="checkbox"]) {
+  padding: .5em .8em;
+  border: 1px solid $primary-medium;
+  line-height: 1;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #main {
@@ -64,9 +74,6 @@ input[type="submit"], button {
     &.active {
       background: $tertiary;
 
-      .nav-item-link {
-        color: $secondary;
-      }
       &:not(:last-child) {
         .nav-item-link {
         }
@@ -74,6 +81,7 @@ input[type="submit"], button {
     }
     .nav-item-link {
       padding: .5em 1em;
+      color: $secondary;
     }
   }
 }
