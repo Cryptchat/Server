@@ -3,8 +3,7 @@
 class RegistrationsController < ApplicationController
   def knock
     render json: {
-      is_cryptchat: true,
-      name: "Smokin' hot!"
+      is_cryptchat: true
     }
   end
 
@@ -34,7 +33,7 @@ class RegistrationsController < ApplicationController
           record.save!
         end
         User.notify_users(excluded_user_id: user.id)
-        render json: { id: user.id, auth_token: auth_token.unhashed_token }
+        render json: { id: user.id, auth_token: auth_token.unhashed_token, server_name: ServerSetting.server_name }
       else
         render error_response(
           status: 403,

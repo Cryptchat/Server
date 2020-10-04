@@ -73,6 +73,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     record = Registration.find(response.parsed_body["id"])
     assert_nil(record.user_id)
 
+    ServerSetting.server_name = 'small test server'
     stub_firebase(
       notified_users,
       data: { command: Notifier::SYNC_USERS_COMMAND }
@@ -85,6 +86,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     }
     assert_equal(200, response.status)
     assert_equal(32, response.parsed_body["auth_token"].size)
+    assert_equal('small test server', response.parsed_body["server_name"])
     record.reload
     assert(record.user)
     assert_equal(record.user.id, response.parsed_body["id"])
