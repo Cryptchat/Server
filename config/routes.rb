@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     post "sync/messages.json" => "messages#sync"
     post "avatar.json" => "uploads#upload_avatar"
     get "avatar/:sha" => "uploads#get_avatar"
+    get "my-avatar.json" => "uploads#my_avatar_url"
     post "generate-admin-token.json" => "admin_tokens#generate"
   end
   namespace :admin do

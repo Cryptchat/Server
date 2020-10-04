@@ -68,4 +68,18 @@ class UploadsControllerTest < CryptchatIntegrationTest
     get "/avatar/21321ab987cfe"
     assert_equal(404, response.status)
   end
+
+  test '#get_avatar returns current user\'s avatar URL' do
+    get '/my-avatar.json'
+    assert_equal(200, response.status)
+    assert_nil(response.parsed_body['url'])
+
+    user = sign_in
+    realimg = fixture_file_upload("files/realimage.jpeg")
+    post '/avatar.json', params: { file: realimg }
+    upload = Upload.find_by(id: response.parsed_body["avatar_id"])
+    get '/my-avatar.json'
+    assert_equal(200, response.status)
+    assert_equal(upload.url, response.parsed_body['url'])
+  end
 end
