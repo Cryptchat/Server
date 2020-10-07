@@ -40,9 +40,21 @@ module Cryptchat
     config.token_pbkdf2_iterations = 30000
 
     config.user_ephemeral_keys_max_count = 1000
-    config.firebase = YAML.load(ERB.new(
-      YAML.load_file("#{Rails.root}/config/firebase.yml")[Rails.env].to_yaml
-    ).result).symbolize_keys
+    config.firebase = YAML.load(
+      ERB.new(
+        YAML.load_file("#{Rails.root}/config/firebase.yml")[Rails.env].to_yaml
+      ).result
+    )
     config.assets.precompile += %w[.png]
+
+    hostname = if Rails.env.test?
+      "http://localhost:9292"
+    elsif Rails.env.development?
+      port = Rails::Server::Options.new.parse!(ARGV)[:Port] rescue nil
+      "http://localhost#{port ? ":#{port}" : ""}"
+    else
+      ENV.fetch('CRYPTCHAT_HOSTNAME')
+    end
+    config.hostname = hostname
   end
 end
