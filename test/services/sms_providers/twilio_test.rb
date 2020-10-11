@@ -37,9 +37,9 @@ class SmsProviders::TwilioTest < ActiveSupport::TestCase
       .with(
         body: { "Body" => "test sms", "From" => "+966501234678", "To" => "+966501234567" },
         headers: {
-          'Accept'=>'*/*',
-          'Authorization'=>'Basic QUNkYXNkc2FkOmRhemFzZGFzZGFzZGFzZGFzZA==',
-          'Content-Type'=>'application/x-www-form-urlencoded',
+          'Accept' => '*/*',
+          'Authorization' => 'Basic QUNkYXNkc2FkOmRhemFzZGFzZGFzZGFzZGFzZA==',
+          'Content-Type' => 'application/x-www-form-urlencoded',
         }
       )
       .to_return(status: 200, body: "", headers: {})
@@ -53,9 +53,9 @@ class SmsProviders::TwilioTest < ActiveSupport::TestCase
       .with(
         body: { "Body" => "test sms", "From" => "+966501234678", "To" => "+966501234567" },
         headers: {
-          'Accept'=>'*/*',
-          'Authorization'=>'Basic QUNkYXNkc2FkOmRhemFzZGFzZGFzZGFzZGFzZA==',
-          'Content-Type'=>'application/x-www-form-urlencoded',
+          'Accept' => '*/*',
+          'Authorization' => 'Basic QUNkYXNkc2FkOmRhemFzZGFzZGFzZGFzZGFzZA==',
+          'Content-Type' => 'application/x-www-form-urlencoded',
         }
       )
       .to_return(status: 200, body: "", headers: {})

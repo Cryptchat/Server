@@ -9,4 +9,4 @@ sms_configs = YAML.load(
 )
 Rails.application.config.sms_provider = sms_provider
 Rails.application.config.sms_provider_configs = sms_configs
-SmsProviders.instance # to make sure configs are verified at boot time
+SmsProviders.instance if !Rails.env.test? # to make sure configs are verified at boot time

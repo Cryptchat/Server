@@ -120,24 +120,86 @@ class MessagesControllerTest < CryptchatIntegrationTest
     assert_equal(I18n.t("recipient_is_suspended"), response.parsed_body["messages"].first)
   end
 
-  test '#sync returns messages for current user' do
+  test '#sync returns messages for current user and deletes messages whose ids are less than last_seen_id' do
     current_user = sign_in
     sender1 = Fabricate(:user)
     sender2 = Fabricate(:user)
 
-    msg1 = Fabricate(:message, sender_user_id: sender1.id, receiver_user_id: current_user.id)
-    msg2 = Fabricate(:message, sender_user_id: sender2.id, receiver_user_id: current_user.id)
-    msg3 = Fabricate(:message, sender_user_id: sender2.id, receiver_user_id: current_user.id)
-    msg4 = Fabricate(:message, sender_user_id: sender1.id, receiver_user_id: current_user.id)
-    msg5 = Fabricate(:message, sender_user_id: current_user.id, receiver_user_id: sender1.id)
+    msg1 = Fabricate(
+      :message,
+      sender_user_id: sender1.id,
+      receiver_user_id: current_user.id
+    )
+    msg2 = Fabricate(
+      :message,
+      sender_user_id: sender2.id,
+      receiver_user_id: current_user.id
+    )
+    msg3 = Fabricate(
+      :message,
+      sender_user_id: sender2.id,
+      receiver_user_id: current_user.id
+    )
+    msg4 = Fabricate(
+      :message,
+      sender_user_id: sender1.id,
+      receiver_user_id: current_user.id
+    )
+    msg5 = Fabricate(
+      :message,
+      sender_user_id: current_user.id,
+      receiver_user_id: sender1.id
+    )
 
     post '/sync/messages.json'
     assert_equal(200, response.status)
-    assert_equal([msg1, msg2, msg3, msg4].map(&:id), response.parsed_body["messages"].map { |m| m["id"] })
+    assert_equal(
+      [msg1, msg2, msg3, msg4].map(&:id),
+      response.parsed_body["messages"].map { |m| m["id"] }
+    )
 
     post '/sync/messages.json', params: { last_seen_id: msg2.id }
     assert_equal(200, response.status)
-    assert_equal([msg3, msg4].map(&:id), response.parsed_body["messages"].map { |m| m["id"] })
+    assert_equal(
+      [msg3, msg4].map(&:id),
+      response.parsed_body["messages"].map { |m| m["id"] }
+    )
+    assert_equal([msg3, msg4, msg5].map(&:id).sort, Message.pluck(:id).sort)
+
+    post '/sync/messages.json', params: { last_seen_id: msg3.id }
+    assert_equal(200, response.status)
+    assert_equal(
+      [msg4.id],
+      response.parsed_body["messages"].map { |m| m["id"] }
+    )
+    assert_equal([msg4, msg5].map(&:id).sort, Message.pluck(:id).sort)
+  end
+
+  test '#sync includes in the response whether or not there are more messages' do
+    current_user = sign_in
+    sender1 = Fabricate(:user)
+    sender2 = Fabricate(:user)
+
+    messages = 55.times.to_a.map do
+      Fabricate(
+        :message,
+        sender_user_id: [sender1, sender2].sample.id,
+        receiver_user_id: current_user.id
+      )
+    end
+    post '/sync/messages.json'
+    assert_equal(200, response.status)
+    assert_equal(messages.first(50).map(&:id), response.parsed_body["messages"].map { |m| m["id"] })
+    assert(response.parsed_body["has_more"])
+
+    post '/sync/messages.json', params: { last_seen_id: messages[49].id }
+    assert_equal(200, response.status)
+    assert_equal(
+      messages.last(5).map(&:id),
+      response.parsed_body["messages"].map { |m| m["id"] }
+    )
+    refute(response.parsed_body["has_more"])
+    assert_equal(messages.last(5).map(&:id), Message.pluck(:id).sort)
   end
 
   test '#sync requires logged in user' do

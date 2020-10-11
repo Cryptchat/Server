@@ -28,7 +28,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
           'To' => '1111111'
         },
         headers: {
-          'Authorization'=>'Basic QUM2MWUyYzU2N2QyMzBiMGMwYzYwMzQ1NjIyZTU4MzAwODo1NGM0YjVjYmYzNGFjYmY3YTljNWU3MzQ3Y2IwN2Q0NQ==',
+          'Authorization' => 'Basic QUM2MWUyYzU2N2QyMzBiMGMwYzYwMzQ1NjIyZTU4MzAwODo1NGM0YjVjYmYzNGFjYmY3YTljNWU3MzQ3Y2IwN2Q0NQ==',
         }
       )
       .to_return(status: 200, body: "", headers: {})
@@ -66,7 +66,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
           'To' => '1111111'
         },
         headers: {
-          'Authorization'=>'Basic QUM2MWUyYzU2N2QyMzBiMGMwYzYwMzQ1NjIyZTU4MzAwODo1NGM0YjVjYmYzNGFjYmY3YTljNWU3MzQ3Y2IwN2Q0NQ==',
+          'Authorization' => 'Basic QUM2MWUyYzU2N2QyMzBiMGMwYzYwMzQ1NjIyZTU4MzAwODo1NGM0YjVjYmYzNGFjYmY3YTljNWU3MzQ3Y2IwN2Q0NQ==',
         }
       )
       .to_return(status: 200, body: "", headers: {})
@@ -105,7 +105,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
           'To' => '1111111'
         },
         headers: {
-          'Authorization'=>'Basic QUM2MWUyYzU2N2QyMzBiMGMwYzYwMzQ1NjIyZTU4MzAwODo1NGM0YjVjYmYzNGFjYmY3YTljNWU3MzQ3Y2IwN2Q0NQ==',
+          'Authorization' => 'Basic QUM2MWUyYzU2N2QyMzBiMGMwYzYwMzQ1NjIyZTU4MzAwODo1NGM0YjVjYmYzNGFjYmY3YTljNWU3MzQ3Y2IwN2Q0NQ==',
         }
       )
       .to_return(status: 200, body: "", headers: {})
@@ -161,7 +161,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
           'To' => '1111111'
         },
         headers: {
-          'Authorization'=>'Basic QUM2MWUyYzU2N2QyMzBiMGMwYzYwMzQ1NjIyZTU4MzAwODo1NGM0YjVjYmYzNGFjYmY3YTljNWU3MzQ3Y2IwN2Q0NQ==',
+          'Authorization' => 'Basic QUM2MWUyYzU2N2QyMzBiMGMwYzYwMzQ1NjIyZTU4MzAwODo1NGM0YjVjYmYzNGFjYmY3YTljNWU3MzQ3Y2IwN2Q0NQ==',
         }
       )
       .to_return(status: 200, body: "", headers: {})
@@ -192,7 +192,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
           'To' => '1111111'
         },
         headers: {
-          'Authorization'=>'Basic QUM2MWUyYzU2N2QyMzBiMGMwYzYwMzQ1NjIyZTU4MzAwODo1NGM0YjVjYmYzNGFjYmY3YTljNWU3MzQ3Y2IwN2Q0NQ==',
+          'Authorization' => 'Basic QUM2MWUyYzU2N2QyMzBiMGMwYzYwMzQ1NjIyZTU4MzAwODo1NGM0YjVjYmYzNGFjYmY3YTljNWU3MzQ3Y2IwN2Q0NQ==',
         }
       )
       .to_return(status: 200, body: "", headers: {})

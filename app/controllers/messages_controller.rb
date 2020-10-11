@@ -50,8 +50,14 @@ class MessagesController < ApplicationController
       .where(receiver_user_id: user_id)
       .where("id > ?", last_seen_id)
       .order(:id)
-      .limit(50)
-    render json: messages, status: 200
+      .limit(51)
+    has_more = messages.size == 51
+    messages = messages[0..-2] if has_more
+    Message
+      .where(receiver_user_id: user_id)
+      .where("id <= ?", last_seen_id)
+      .delete_all
+    render json: { messages: messages, has_more: has_more }, status: 200
   end
 
   private

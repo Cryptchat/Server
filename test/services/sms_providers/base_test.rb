@@ -56,7 +56,7 @@ class SmsProviders::BaseTest < ActiveSupport::TestCase
       .with(
         body: "{\"to\":\"+966012345678\",\"body\":\"hello this is test\"}",
         headers: {
-          'Authorization'=>'xzcsdasdsa',
+          'Authorization' => 'xzcsdasdsa',
         })
       .to_return(status: 200, body: "", headers: {})
 
