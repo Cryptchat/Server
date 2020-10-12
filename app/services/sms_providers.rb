@@ -5,7 +5,8 @@ module SmsProviders
   class InvalidConfig < StandardError; end
 
   PROVIDERS = {
-    twilio: "SmsProviders::Twilio"
+    twilio: "SmsProviders::Twilio",
+    click_send: "SmsProviders::ClickSend"
   }.freeze
 
   def self.instance

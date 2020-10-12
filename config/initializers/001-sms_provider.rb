@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 sms_provider = ENV['CRYPTCHAT_SMS_PROVIDER']
-sms_provider = 'twilio' if sms_provider.blank?
+sms_provider = 'click_send' if sms_provider.blank?
+sms_provider = 'twilio' if Rails.env.test?
 config_file = "#{Rails.root}/config/#{sms_provider}.yml"
 raise "SMS provider config is not found in #{config_file}" if !File.exists?(config_file)
 sms_configs = YAML.load(

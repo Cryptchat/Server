@@ -23,7 +23,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     stub_request(:post, "https://api.twilio.com/2010-04-01/Accounts/AC61e2c567d230b0c0c60345622e583008/Messages.json")
       .with(
         body: {
-          'Body' => "Please confirm your registration in Cryptchat Server at http://localhost:9292.\nCode: 12345678\n",
+          'Body' => i18n_sms("12345678"),
           'From' => '+966501234567',
           'To' => '1111111'
         },
@@ -61,7 +61,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     stub_request(:post, "https://api.twilio.com/2010-04-01/Accounts/AC61e2c567d230b0c0c60345622e583008/Messages.json")
       .with(
         body: {
-          'Body' => "Please confirm your registration in Cryptchat Server at http://localhost:9292.\nCode: 12345678\n",
+          'Body' => i18n_sms("12345678"),
           'From' => '+966501234567',
           'To' => '1111111'
         },
@@ -100,7 +100,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     stub_request(:post, "https://api.twilio.com/2010-04-01/Accounts/AC61e2c567d230b0c0c60345622e583008/Messages.json")
       .with(
         body: {
-          'Body' => "Please confirm your registration in Cryptchat Server at http://localhost:9292.\nCode: 12345678\n",
+          'Body' => i18n_sms("12345678"),
           'From' => '+966501234567',
           'To' => '1111111'
         },
@@ -156,7 +156,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     stub_request(:post, "https://api.twilio.com/2010-04-01/Accounts/AC61e2c567d230b0c0c60345622e583008/Messages.json")
       .with(
         body: {
-          'Body' => "Please confirm your registration in Cryptchat Server at http://localhost:9292.\nCode: 12345678\n",
+          'Body' => i18n_sms("12345678"),
           'From' => '+966501234567',
           'To' => '1111111'
         },
@@ -187,7 +187,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     stub_request(:post, "https://api.twilio.com/2010-04-01/Accounts/AC61e2c567d230b0c0c60345622e583008/Messages.json")
       .with(
         body: {
-          'Body' => "Please confirm your registration in Cryptchat Server at http://localhost:9292.\nCode: 12345678\n",
+          'Body' => i18n_sms("12345678"),
           'From' => '+966501234567',
           'To' => '1111111'
         },
@@ -215,5 +215,16 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_includes(response.parsed_body["messages"], I18n.t("too_much_time_passed"))
     record.reload
     assert_nil(record.user_id)
+  end
+
+  private
+
+  def i18n_sms(code)
+    I18n.t(
+      "registration_sms_message",
+      server_name: ServerSetting.server_name,
+      token: code,
+      server_url: Rails.application.config.hostname
+    )
   end
 end

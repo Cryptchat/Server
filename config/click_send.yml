@@ -1,0 +1,14 @@
+development:
+  :api_key: <%= ENV.fetch('CRYPTCHAT_CLICKSEND_API_KEY') { 'AC61e2c567d230b0c0c60345622e583008' } %>
+  :username: <%= ENV.fetch('CRYPTCHAT_CLICKSEND_USERNAME') { '54c4b5cbf34acbf7a9c5e7347cb07d45' } %>
+  :sender_id: <%= ENV.fetch('CRYPTCHAT_CLICKSEND_SENDER_ID') { '+966501234567' } %>
+
+production:
+  :api_key: <%= ENV.fetch('CRYPTCHAT_CLICKSEND_API_KEY') %>
+  :username: <%= ENV.fetch('CRYPTCHAT_CLICKSEND_USERNAME') %>
+  :sender_id: <%= ENV.fetch('CRYPTCHAT_CLICKSEND_SENDER_ID') %>
+
+test:
+  :api_key: 'AC61e2c567d230b0c0c60345622e583008'
+  :username: '54c4b5cbf34acbf7a9c5e7347cb07d45'
+  :sender_id: '+966501234567'
