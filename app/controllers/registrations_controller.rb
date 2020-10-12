@@ -42,6 +42,8 @@ class RegistrationsController < ApplicationController
       end
     else
       country_code, phone_number = params.require([:country_code, :phone_number])
+      country_code = country_code.strip
+      phone_number = phone_number.strip
       record = Registration.find_or_initialize_by(country_code: country_code, phone_number: phone_number)
       if record && record.user_id.present?
         return render error_response(
@@ -57,7 +59,7 @@ class RegistrationsController < ApplicationController
           sms_content: I18n.t(
             "registration_sms_message",
             server_name: ServerSetting.server_name,
-            code: record.verification_token,
+            token: record.verification_token,
             server_url: Rails.application.config.hostname
           ),
           to: country_code + phone_number

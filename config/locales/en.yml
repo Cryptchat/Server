@@ -62,9 +62,7 @@ en:
   too_much_time_passed: "Too much time has passed since the code was sent. Please register again."
   number_already_registered: "This number is already registered on the server. Please use a different number"
   incorrect_code: "Incorrect code. Please try again."
-  registration_sms_message: |
-    Please confirm your registration in %{server_name} at %{server_url}.
-    Code: %{code}
+  registration_sms_message: "Please confirm your registration in %{server_name} at %{server_url}. Token: %{token}"
   keys_param_incorrect_format: "Keys param must be an array of hashes each of which must have id and key attributes."
   keys_count_exceeds_limit: "Cannot add this batch of keys because keys count would exceed the limit."
   sepk_present_but_not_ekioud: "A ephemeral_key_id_on_user_device parameter is required."

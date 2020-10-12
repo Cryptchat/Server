@@ -17,7 +17,10 @@ class SmsProviders::Base
     body = build_body
     headers = build_headers
 
+    Rails.logger.debug("Sending SMS message to #{to.inspect}, url=#{url.inspect}, body=#{body.inspect}, headers=#{headers.inspect}")
     response = ::Net::HTTP.post(URI(url), body || "", headers || {})
+    Rails.logger.debug(response.inspect)
+    Rails.logger.debug(response.body)
     if response.code.to_i > 299
       Rails.logger.error("Failed to send sms message. #{response.inspect} #{response.body}")
     end
