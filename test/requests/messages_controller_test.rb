@@ -157,6 +157,10 @@ class MessagesControllerTest < CryptchatIntegrationTest
       [msg1, msg2, msg3, msg4].map(&:id),
       response.parsed_body["messages"].map { |m| m["id"] }
     )
+    assert_equal(
+      [msg1, msg2, msg3, msg4].map { |m| (m.created_at.to_f * 1000).floor },
+      response.parsed_body["messages"].map { |m| m["created_at"] }
+    )
 
     post '/sync/messages.json', params: { last_seen_id: msg2.id }
     assert_equal(200, response.status)

@@ -57,7 +57,10 @@ class MessagesController < ApplicationController
       .where(receiver_user_id: user_id)
       .where("id <= ?", last_seen_id)
       .delete_all
-    render json: { messages: messages, has_more: has_more }, status: 200
+    render json: {
+      messages: messages.map { |m| MessageSerializer.new(m, root: false).as_json },
+      has_more: has_more
+    }, status: 200
   end
 
   private
