@@ -152,3 +152,19 @@ class ServerSetting < ApplicationRecord
   load_settings(File.join(Rails.root, "config", "settings.yml"))
 
 end
+
+# == Schema Information
+#
+# Table name: server_settings
+#
+#  id         :bigint           not null, primary key
+#  name       :string           not null
+#  value      :text
+#  data_type  :integer          not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_server_settings_on_name  (name) UNIQUE
+#
