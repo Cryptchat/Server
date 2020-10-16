@@ -128,6 +128,24 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       identity_key: "3333aaaa",
       instance_id: "dfwersadsad"
     }
+    assert_equal(400, response.status)
+    post "/register.json", params: {
+      id: record.id,
+      verification_token: "12345678",
+      identity_key: "3333aaaa",
+      instance_id: "dfwersadsad",
+      country_code: "111",
+      phone_number: "11111" # wrong number
+    }
+    assert_equal(404, response.status)
+    post "/register.json", params: {
+      id: record.id,
+      verification_token: "12345678",
+      identity_key: "3333aaaa",
+      instance_id: "dfwersadsad",
+      country_code: "111",
+      phone_number: "1111"
+    }
     assert_equal(200, response.status)
     assert_equal(32, response.parsed_body["auth_token"].size)
     assert_equal('small test server', response.parsed_body["server_name"])
@@ -144,7 +162,9 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     post "/register.json", params: {
       id: record.id,
       verification_token: "12345678",
-      identity_key: "4444bbbb"
+      identity_key: "4444bbbb",
+      country_code: "111",
+      phone_number: "1111"
     }
     assert_equal(403, response.status)
     assert_includes(response.parsed_body["messages"], I18n.t("number_already_registered"))
@@ -175,7 +195,9 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     post "/register.json", params: {
       id: record.id,
       verification_token: "aaaabbbb",
-      identity_key: "3333aaaa"
+      identity_key: "3333aaaa",
+      country_code: "111",
+      phone_number: "1111"
     }
     assert_equal(403, response.status)
     assert_includes(response.parsed_body["messages"], I18n.t("incorrect_code"))
@@ -209,12 +231,86 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     post "/register.json", params: {
       id: record.id,
       verification_token: "12345678",
-      identity_key: "3333aaaa"
+      identity_key: "3333aaaa",
+      country_code: "111",
+      phone_number: "1111"
     }
     assert_equal(403, response.status)
     assert_includes(response.parsed_body["messages"], I18n.t("too_much_time_passed"))
     record.reload
     assert_nil(record.user_id)
+  end
+
+  test '#register rejects registrations if the server is invite only and no invite exists for the phone number' do
+    ServerSetting.invite_only = true
+    invite = Fabricate(:invite, country_code: '+966', phone_number: '123469', expires_at: 15.minutes.from_now)
+    post "/register.json", params: { country_code: "111", phone_number: "1111" }
+    assert_equal(403, response.status)
+    assert_equal(I18n.t("registration_invite_only"), response.parsed_body["messages"].first)
+    refute(invite.reload.claimed?)
+
+    stub_request(:post, "https://api.twilio.com/2010-04-01/Accounts/AC61e2c567d230b0c0c60345622e583008/Messages.json")
+      .with(
+        body: {
+          'Body' => i18n_sms("12345678"),
+          'From' => '+966501234567',
+          'To' => '+966123469'
+        },
+        headers: {
+          'Authorization' => 'Basic QUM2MWUyYzU2N2QyMzBiMGMwYzYwMzQ1NjIyZTU4MzAwODo1NGM0YjVjYmYzNGFjYmY3YTljNWU3MzQ3Y2IwN2Q0NQ==',
+        }
+      )
+      .to_return(status: 200, body: "", headers: {})
+    SecureRandom.stub :rand, 0.123456789123456789 do
+      post "/register.json", params: { country_code: '+966', phone_number: '123469' }
+    end
+    assert_equal(200, response.status)
+    refute(invite.reload.claimed?)
+
+    id = response.parsed_body["id"]
+    travel(25.minutes) do
+      post "/register.json", params: {
+        id: id,
+        verification_token: "12345678",
+        identity_key: "3333aaaa",
+        country_code: '+966',
+        phone_number: '123469'
+      }
+    end
+    assert_equal(403, response.status)
+    assert_equal(I18n.t("registration_invite_expired"), response.parsed_body["messages"].first)
+    refute(invite.reload.claimed?)
+
+    stub_firebase(
+      User.all.to_a,
+      data: { command: Notifier::SYNC_USERS_COMMAND }
+    )
+    post "/register.json", params: {
+      id: id,
+      verification_token: "12345678",
+      identity_key: "3333aaaa",
+      country_code: '+966',
+      phone_number: '123469'
+    }
+    assert_equal(200, response.status)
+    assert_equal(32, response.parsed_body["auth_token"].size)
+    assert(invite.reload.claimed?)
+    attrs = invite.attributes
+
+    post "/register.json", params: { country_code: '+966', phone_number: '123469' }
+    assert_equal(403, response.status)
+    assert_equal(I18n.t("registration_invite_only"), response.parsed_body["messages"].first)
+
+    post "/register.json", params: {
+      id: id,
+      verification_token: "12345678",
+      identity_key: "3333aaaa",
+      country_code: '+966',
+      phone_number: '123469'
+    }
+    assert_equal(403, response.status)
+    assert_equal(I18n.t("registration_invite_only"), response.parsed_body["messages"].first)
+    assert_equal(attrs, invite.reload.attributes)
   end
 
   private

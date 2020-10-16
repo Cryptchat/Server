@@ -1,6 +1,7 @@
 # frozen_string_literal: true
+
 Fabricator(:user) do
-  country_code "00966"
+  country_code "+966"
   phone_number { sequence(:phone_number).to_s }
   instance_id { sequence(:instance_id).to_s }
   identity_key { sequence(:identity_key).to_s }

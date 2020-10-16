@@ -1,1 +1,3 @@
 server_name: 'Cryptchat Server'
+invite_only: false
+invites_expire_after_hours: 24

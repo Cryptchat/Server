@@ -71,6 +71,8 @@ en:
   unauthorized_to_perform_action: "You are not authorized to perform this action"
   you_are_suspended: "You have been suspended from this server."
   registration_record_not_found: "Registration record with the provided ID couldn't be found"
+  registration_invite_only: "This server doesn't allow public registrations. You must be invited by an admin to register."
+  registration_invite_expired: "Your invite has expired. Please ask the admin to invite you again."
   eph_key_grab_failed_user_not_found: "Failed to get ephemeral key because the target user couldn't be found"
   recipient_is_suspended: "The recipient of this message has been suspended from this server."
   jpeg_file_required: "This endpoint requires a JPEG file"

@@ -8,9 +8,27 @@ class RegistrationsController < ApplicationController
   end
 
   def register
+    country_code, phone_number = params.require([:country_code, :phone_number])
+    country_code = country_code.strip
+    phone_number = phone_number.strip
+    invite = Invite.invite_for(country_code, phone_number)
+    if ServerSetting.invite_only
+      return render error_response(
+        status: 403,
+        message: I18n.t("registration_invite_only")
+      ) unless invite
+      return render error_response(
+        status: 403,
+        message: I18n.t("registration_invite_expired")
+      ) if invite.expired?
+    end
     if params[:id]
       verification_token, identity_key = params.require([:verification_token, :identity_key])
-      record = Registration.find_by(id: params[:id])
+      record = Registration.find_by(
+        id: params[:id],
+        country_code: country_code,
+        phone_number: phone_number
+      )
       return render error_response(
         status: 404,
         message: I18n.t("registration_record_not_found")
@@ -31,6 +49,7 @@ class RegistrationsController < ApplicationController
           auth_token = AuthToken.generate(user)
           record.user_id = user.id
           record.save!
+          invite&.claim!
         end
         User.notify_users(excluded_user_id: user.id)
         render json: { id: user.id, auth_token: auth_token.unhashed_token, server_name: ServerSetting.server_name }
@@ -41,9 +60,6 @@ class RegistrationsController < ApplicationController
         )
       end
     else
-      country_code, phone_number = params.require([:country_code, :phone_number])
-      country_code = country_code.strip
-      phone_number = phone_number.strip
       record = Registration.find_or_initialize_by(country_code: country_code, phone_number: phone_number)
       if record && record.user_id.present?
         return render error_response(

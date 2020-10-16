@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_29_191321) do
+ActiveRecord::Schema.define(version: 2020_10_16_132616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,17 @@ ActiveRecord::Schema.define(version: 2020_09_29_191321) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_ephemeral_keys_on_user_id"
+  end
+
+  create_table "invites", force: :cascade do |t|
+    t.bigint "inviter_id", null: false
+    t.string "country_code", limit: 10, null: false
+    t.string "phone_number", limit: 50, null: false
+    t.datetime "expires_at", null: false
+    t.boolean "claimed", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["country_code", "phone_number"], name: "index_invites_on_country_code_and_phone_number", unique: true
   end
 
   create_table "messages", force: :cascade do |t|
