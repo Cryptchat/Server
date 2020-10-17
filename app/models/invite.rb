@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Invite < ApplicationRecord
-  @skip_number_uniqueness = true
   include HasPhoneNumber
   class InviteError < StandardError; end
 

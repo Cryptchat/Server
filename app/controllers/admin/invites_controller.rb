@@ -25,6 +25,6 @@ class Admin::InvitesController < Admin::AdminController
     rescue Invite::InviteError => error
       return redirect_to :admin_invites, flash: { error: t(".#{error.message}") }
     end
-    redirect_to :admin_invites, notice: t('.invite_success')
+    redirect_to :admin_invites, notice: t('.invite_success', number: country_code + phone_number)
   end
 end
