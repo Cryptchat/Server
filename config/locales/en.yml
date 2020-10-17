@@ -34,6 +34,7 @@ en:
     admin:
       settings: Settings
       users: Users
+      invites: Invites
   admin:
     users:
       index:
@@ -56,13 +57,29 @@ en:
       cant_change_yourself: "You cannot suspend or revoke admin rights to yourself."
     server_settings:
       server_name: "This name will be used when users add this server to their devices."
+      invite_only: "Disable public registrations and only allow invited users to register."
+      invites_expire_after_hours: "Invites will expire after this many hours. Users with expired invites can be invited again."
       index:
         save: Save
         revert: Revert
+    invites:
+      index:
+        invite_new_user: Invite a new user
+        country_code: "Country code:"
+        phone_number: "Phone number:"
+        send_invite: "Invite"
+      create:
+        not_allowed_country: 'Specified country is not allowed'
+        invalid_number: 'The given number does not have the correct format of the given country.'
+        user_already_exists: 'There is already a user with this phone number.'
+        invite_already_exists: 'There is already an invite for this user'
+        invite_success: 'An invite has been sent to %{number} successfully'
+        empty_country_code_or_number: 'No country code and/or phone number has been provided.'
   too_much_time_passed: "Too much time has passed since the code was sent. Please register again."
   number_already_registered: "This number is already registered on the server. Please use a different number"
   incorrect_code: "Incorrect code. Please try again."
   registration_sms_message: "Please confirm your registration in %{server_name} at %{server_url}. Token: %{token}"
+  invite_sms_message: "You have been invited by %{inviter} to register in %{server_name} at %{server_url}. Please download the Cryptchat app and register with your phone number at the given server address."
   keys_param_incorrect_format: "Keys param must be an array of hashes each of which must have id and key attributes."
   keys_count_exceeds_limit: "Cannot add this batch of keys because keys count would exceed the limit."
   sepk_present_but_not_ekioud: "A ephemeral_key_id_on_user_device parameter is required."

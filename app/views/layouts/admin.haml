@@ -10,8 +10,13 @@
             = link_to t('.users'), admin_users_path, class: 'nav-item-link'
           %li.nav-item{ class: current_page?(admin_settings_path) ? 'active' : '' }
             = link_to t('.settings'), admin_settings_path, class: 'nav-item-link'
+          %li.nav-item{ class: current_page?(admin_invites_path) ? 'active' : '' }
+            = link_to t('.invites'), admin_invites_path, class: 'nav-item-link'
     %div#main
       - flash.each do |type, msg|
         %div.flash-notice-container
-          %div.flash-notice= msg
+          - if type.to_s == 'error'
+            %div.flash-notice.error= msg
+          - else
+            %div.flash-notice= msg
       = yield

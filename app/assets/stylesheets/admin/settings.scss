@@ -24,7 +24,10 @@
   &.boolean {
     .setting-content {
       display: flex;
-      align-items: center;
+      align-items: start;
+      input {
+        margin-right: 1em;
+      }
     }
   }
   &:not(.boolean) {

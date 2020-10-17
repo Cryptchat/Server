@@ -95,5 +95,9 @@ input:not([type="checkbox"]) {
     background: $tertiary-low;
     display: inline-block;
     padding: .5em 1em;
+
+    &.error {
+      background: $error-low;
+    }
   }
 }

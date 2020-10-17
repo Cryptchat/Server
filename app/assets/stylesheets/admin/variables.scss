@@ -17,6 +17,7 @@ $font-down-6: 0.4355em;
 $primary: #2C3E50;
 $secondary: #FFFFFF;
 $tertiary: #3E7DF7;
+$error: #F73E3E;
 
 @function dc-color-brightness($color) {
   @return (
@@ -55,3 +56,8 @@ $tertiary-low: dark-light-diff($tertiary, $secondary, 85%, -65%) !default;
 $tertiary-medium: dark-light-diff($tertiary, $secondary, 50%, -45%) !default;
 $tertiary-high: dark-light-diff($tertiary, $secondary, 20%, -25%) !default;
 $tertiary-hover: dark-light-diff($tertiary, $secondary, -25%, -25%) !default;
+
+$error-low: dark-light-diff($error, $secondary, 85%, -65%) !default;
+$error-medium: dark-light-diff($error, $secondary, 50%, -45%) !default;
+$error-high: dark-light-diff($error, $secondary, 20%, -25%) !default;
+$error-hover: dark-light-diff($error, $secondary, -25%, -25%) !default;

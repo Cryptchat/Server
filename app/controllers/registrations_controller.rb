@@ -68,19 +68,15 @@ class RegistrationsController < ApplicationController
         )
       end
       record.generate_token!
-      if Rails.env.development? && ENV['SMS_STDOUT'].present?
-        puts record.verification_token
-      else
-        SmsProviders.instance.send_sms(
-          sms_content: I18n.t(
-            "registration_sms_message",
-            server_name: ServerSetting.server_name,
-            token: record.verification_token,
-            server_url: Rails.application.config.hostname
-          ),
-          to: country_code + phone_number
-        )
-      end
+      SmsProviders.instance.send_sms(
+        sms_content: I18n.t(
+          "registration_sms_message",
+          server_name: ServerSetting.server_name,
+          token: record.verification_token,
+          server_url: Rails.application.config.hostname
+        ),
+        to: country_code + phone_number
+      )
       render json: { id: record.id, sender_id: Rails.configuration.firebase[:sender_id] }
     end
   end

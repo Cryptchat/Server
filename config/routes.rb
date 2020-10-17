@@ -29,5 +29,7 @@ Rails.application.routes.draw do
 
     get 'settings' => 'server_settings#index'
     put 'settings/:name' => 'server_settings#update'
+    get 'invites' => 'invites#index'
+    post 'invites' => 'invites#create'
   end
 end

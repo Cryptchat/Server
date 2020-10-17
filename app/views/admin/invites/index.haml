@@ -1,0 +1,13 @@
+= form_with(url: admin_invites_path, method: 'POST', class: 'invite-form') do
+  %h2= t('.invite_new_user')
+  %div.form-section
+    %label{ for: 'country' }= t('.country_code')
+    %select{ name: 'country', class: 'country-code-selector' }
+      - Countries.all.each do |id, hash|
+        %option{ value: id }
+          = Countries.flag_for(id)
+          = hash[:country_code]
+  %div.form-section
+    %label{ for: 'phone_number' }= t('.phone_number')
+    %input{ type: 'tel', name: 'phone_number', class: 'phone-number-input' }
+  %button= t('.send_invite')

@@ -33,6 +33,20 @@ class ActiveSupport::TestCase
     )
   end
 
+  def stub_sms(to, body, status = 200)
+    instance = SmsProviders.instance
+    instance.to = to
+    instance.sms_content = body
+
+    url = instance.build_url
+    body = instance.build_body
+    headers = instance.build_headers
+
+    stub_request(:post, url)
+      .with(body: body, headers: headers)
+      .to_return(status: status, body: "", headers: {})
+  end
+
   def cleanup_avatars_dir
     files = Dir.glob(Rails.root.join('storage', 'avatars', 'tests', '*'))
     FileUtils.rm_rf(files)

@@ -10,12 +10,12 @@ module SmsProviders
   }.freeze
 
   def self.instance
-    return @provider if @provider.present?
-
+    return @klass.new(@configs) if @klass && @configs
     name = Rails.application.config.sms_provider&.to_sym
     klass = PROVIDERS[name]
     raise UnknownProvider.new("Unknown provider #{name}") if !klass
-    configs = Rails.application.config.sms_provider_configs
-    @provider = klass.constantize.new(configs)
+    @configs = Rails.application.config.sms_provider_configs
+    @klass = klass.constantize
+    @klass.new(@configs)
   end
 end

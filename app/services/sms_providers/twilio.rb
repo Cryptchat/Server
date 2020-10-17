@@ -21,6 +21,7 @@ class SmsProviders::Twilio < SmsProviders::Base
   def build_body
     from = @configs[:from]
     params = { From: from, Body: @sms_content, To: @to }
+    # return params if Rails.env.test?
     Rack::Utils.build_query(params)
   end
 

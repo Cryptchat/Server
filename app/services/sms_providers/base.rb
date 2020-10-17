@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SmsProviders::Base
+  attr_accessor :to, :sms_content
+
   def initialize(configs)
     @configs = configs
     raise SmsProviders::InvalidConfig.new(configs) if !configs_valid?
@@ -17,6 +19,16 @@ class SmsProviders::Base
     body = build_body
     headers = build_headers
 
+    if Rails.env.development? && ENV['SMS_STDOUT'].present?
+      return puts <<~SMS
+        to: #{to}
+        body: #{sms_content}
+        --------------------------
+        req_url: #{url.inspect}
+        req_headers: #{headers.inspect}
+        req_body: #{body.inspect}
+      SMS
+    end
     Rails.logger.debug("Sending SMS message to #{to.inspect}, url=#{url.inspect}, body=#{body.inspect}, headers=#{headers.inspect}")
     response = ::Net::HTTP.post(URI(url), body || "", headers || {})
     Rails.logger.debug(response.inspect)
