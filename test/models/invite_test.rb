@@ -21,9 +21,11 @@ class InviteTest < ActiveSupport::TestCase
   test '.invite! works when there is an expired invite' do
     invite = Fabricate(:invite, country_code: '+966', phone_number: '13313', expires_at: 5.minutes.ago)
     inviter = Fabricate(:user)
+    refute_equal(inviter.id, invite.inviter_id)
     stub_invite_sms(inviter, invite.country_code, invite.phone_number)
     Invite.invite!(inviter, invite.country_code, invite.phone_number)
     assert(ServerSetting.invites_expire_after_hours.hours.from_now.to_i == invite.reload.expires_at.to_i)
+    assert_equal(inviter.id, invite.inviter_id)
   end
 
   test '.invite! works' do

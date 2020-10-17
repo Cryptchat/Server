@@ -21,7 +21,10 @@ class Invite < ApplicationRecord
       raise InviteError.new('invite_already_exists')
     end
     if existing_invite
-      existing_invite.update!(expires_at: ServerSetting.invites_expire_after_hours.hours.from_now)
+      existing_invite.update!(
+        inviter_id: inviter.id,
+        expires_at: ServerSetting.invites_expire_after_hours.hours.from_now
+      )
     else
       Invite.create!(
         inviter_id: inviter.id,
