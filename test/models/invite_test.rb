@@ -64,3 +64,7 @@ end
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #
+# Indexes
+#
+#  index_invites_on_country_code_and_phone_number  (country_code,phone_number) UNIQUE
+#
