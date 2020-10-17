@@ -4,7 +4,7 @@ class Admin::AdminController < ActionController::Base
   ADMIN_TOKEN_HEADER = "Cryptchat-Admin-Token"
   ADMIN_ID_HEADER = "Cryptchat-Admin-Id"
 
-  # before_action :ensure_admin
+  before_action :ensure_admin
   layout 'admin'
   helper_method :current_admin
 
