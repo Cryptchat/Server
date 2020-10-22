@@ -2,6 +2,7 @@
 set -e
 
 cd /Server
+git pull
 bundle exec rake db:migrate
 bundle exec rake assets:precompile
 

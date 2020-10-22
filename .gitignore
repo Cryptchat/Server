@@ -27,4 +27,4 @@
 
 start-server
 
-variables.env
+deploy/variables.env
