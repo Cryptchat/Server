@@ -21,7 +21,7 @@ class Notifier
       @users.each_slice(1000).each do |users|
         response = ::Net::HTTP.post(FIREBASE_API_URI, payload(users).to_json, headers)
         if response.code != "200"
-          Rails.logger.error("Failed to send Firebase notification. #{response.inspect}")
+          Rails.logger.error("Failed to send Firebase notification. #{response.inspect}\n#{response.body}")
         end
       end
     end
