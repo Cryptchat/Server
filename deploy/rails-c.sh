@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker exec -it cryptchat-web /bin/bash -c 'rails c'
+docker exec -it cryptchat-app /bin/bash -c 'rails c'
