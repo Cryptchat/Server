@@ -34,8 +34,10 @@ class RegistrationsController < ApplicationController
         message: I18n.t("registration_record_not_found")
       ) unless record
 
+      # check if the token matches the token the server sent to the user's phone number
       result = record.verify(verification_token)
       if result[:success]
+        # token matches, accept it and create user in the database
         user = User.new(
           country_code: record.country_code,
           phone_number: record.phone_number,
@@ -54,6 +56,7 @@ class RegistrationsController < ApplicationController
         User.notify_users(excluded_user_id: user.id)
         render json: { id: user.id, auth_token: auth_token.unhashed_token, server_name: ServerSetting.server_name }
       else
+        # Token doesn't match, reject registration
         render error_response(
           status: 403,
           message: result[:reason]
@@ -68,6 +71,7 @@ class RegistrationsController < ApplicationController
         )
       end
       record.generate_token!
+      # send SMS to the given phone number
       SmsProviders.instance.send_sms(
         sms_content: I18n.t(
           "registration_sms_message",
